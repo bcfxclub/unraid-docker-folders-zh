@@ -28,7 +28,7 @@
       <span
         v-if="folder.compose_project"
         class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-info/15 text-info rounded text-[11px] font-medium tracking-wide uppercase mr-1"
-        :title="`Auto-grouped from compose project: ${folder.compose_project}`"
+        :title="`从 Compose 项目自动分组：${folder.compose_project}`"
       >
         <IconComposeStack :size="12" />
         Compose
@@ -44,24 +44,24 @@
         @compose-down="(p) => emit('compose-down', p)"
         @schedules="(type, id) => emit('schedules', type, id)"
       />
-      <span class="shrink-0 inline-flex items-center justify-center min-w-6 h-6 px-2 rounded-full text-xs font-semibold ml-1" :class="runningCount > 0 ? 'bg-primary text-primary-text' : 'bg-border text-text-secondary'" :title="`${runningCount} running / ${existingContainerCount} total`">
+      <span class="shrink-0 inline-flex items-center justify-center min-w-6 h-6 px-2 rounded-full text-xs font-semibold ml-1" :class="runningCount > 0 ? 'bg-primary text-primary-text' : 'bg-border text-text-secondary'" :title="`${runningCount} 运行中 / ${existingContainerCount} 总数`">
         {{ runningCount }}/{{ existingContainerCount }}
       </span>
       <span v-if="crashedCount > 0" class="shrink-0 inline-flex items-center justify-center min-w-6 h-6 px-2 rounded-full text-xs font-semibold ml-1 bg-error/15 text-error" :title="crashedTitle">
-        <span class="hidden sm:inline">{{ crashedCount }} crashed</span>
+        <span class="hidden sm:inline">{{ crashedCount }} 已崩溃</span>
         <span class="sm:hidden">{{ crashedCount }}</span>
       </span>
-      <span v-if="folderUpdateCount > 0" class="shrink-0 inline-flex items-center justify-center min-w-6 h-6 px-2 rounded-full text-xs font-semibold ml-1 bg-warning/20 text-warning" :title="`${folderUpdateCount} update(s) available`">
-        <span class="hidden sm:inline">{{ folderUpdateCount }} update{{ folderUpdateCount > 1 ? 's' : '' }}</span>
+      <span v-if="folderUpdateCount > 0" class="shrink-0 inline-flex items-center justify-center min-w-6 h-6 px-2 rounded-full text-xs font-semibold ml-1 bg-warning/20 text-warning" :title="`${folderUpdateCount} 个更新可用`">
+        <span class="hidden sm:inline">{{ folderUpdateCount }} 个更新</span>
         <span class="sm:hidden">{{ folderUpdateCount }}</span>
       </span>
       <!-- The kebab item that starts this check disappears with the menu, so
            the only sign it is running has to live in the always-visible header. -->
       <span v-if="folderCheckingUpdates" class="shrink-0 inline-flex items-center gap-1 h-6 px-2 ml-1 text-xs text-text-secondary" title="Checking for image updates">
         <svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-        <span class="hidden sm:inline">Checking…</span>
+        <span class="hidden sm:inline">正在检查…</span>
       </span>
-      <span v-if="collapsed && collapsedPorts" class="hidden sm:inline text-[11px] text-text font-mono ml-2 truncate">Ports: {{ collapsedPorts }}</span>
+      <span v-if="collapsed && collapsedPorts" class="hidden sm:inline text-[11px] text-text font-mono ml-2 truncate">端口：{{ collapsedPorts }}</span>
       <!-- Folder total stats loading -->
       <div v-if="collapsed && settingsStore.showStats && !folderStats && runningCount > 0" class="hidden md:block ml-auto mr-4 shrink-0 w-[140px] space-y-0.5">
         <StatsBar label="CPU" :percent="null" size="inline" />
@@ -77,7 +77,7 @@
       <button
         class="p-1.5 rounded cursor-pointer transition relative"
         :class="hideStopped ? 'text-text' : 'text-text-secondary hover:text-text'"
-        :title="hideStopped ? 'Show stopped containers' : 'Hide stopped containers'"
+        :title="hideStopped ? '显示已停止的容器' : '隐藏已停止的容器'"
         @click="$emit('toggle-hide-stopped')"
       >
         <svg v-if="hideStopped" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -90,11 +90,11 @@
         </svg>
         <span v-if="hideStopped && hiddenCount > 0" class="absolute -top-1 -right-1 flex items-center justify-center min-w-4 h-4 px-1 bg-text-secondary text-white rounded-full text-[10px] font-bold">{{ hiddenCount }}</span>
       </button>
-      <span class="p-1.5 rounded" :class="allAutostart ? 'text-success' : 'text-text-secondary opacity-30'" :title="allAutostart ? 'All containers set to autostart' : 'Not all containers set to autostart'"><IconAutostart :size="16" /></span>
+      <span class="p-1.5 rounded" :class="allAutostart ? 'text-success' : 'text-text-secondary opacity-30'" :title="allAutostart ? '所有容器均已设置为自动启动' : '并非所有容器都设置为自动启动'"><IconAutostart :size="16" /></span>
     <KebabMenu
       ref="kebabMenu"
       :items="folderMenuItems"
-      button-title="Folder actions"
+      button-title="文件夹操作"
       button-class="p-2 border-none rounded cursor-pointer transition text-text-secondary hover:text-text"
       @select="handleMenuSelect"
     />
@@ -102,13 +102,13 @@
   </div>
   <InputModal
     :is-open="showDelayModal"
-    title="Folder Autostart Delay"
-    :description="`Set delay before all containers in &quot;${folder.name}&quot; start automatically (in seconds).`"
+    title="文件夹自动启动延迟"
+    :description="`设置 &quot;${folder.name}&quot; 中所有容器在自动启动前的延迟（以秒为单位）。`"
     :initial-value="String(folderAutostartDelay)"
     placeholder="0"
-    suffix="Seconds to wait before starting containers on boot. Applied to all containers in this folder."
+    suffix="开机启动容器前等待的秒数。应用于此文件夹中的所有容器。"
     input-type="number"
-    confirm-label="Save"
+    confirm-label="保存"
     @confirm="handleFolderDelayConfirm"
     @cancel="showDelayModal = false"
   />
@@ -252,7 +252,7 @@ const folderMenuItems = computed<KebabMenuItem[]>(() => {
   if (folderUpdateCount.value > 0) {
     items.push(
       {
-        label: `Apply Update (${folderUpdateCount.value})`,
+        label: `应用更新 (${folderUpdateCount.value})`,
         icon: DOWNLOAD_ICON,
         action: 'update-folder',
         class: 'text-warning hover:text-warning',
@@ -262,9 +262,9 @@ const folderMenuItems = computed<KebabMenuItem[]>(() => {
   }
 
   items.push(
-    { label: 'Actions', icon: PLAY_ICON, children: actionItems.value },
-    { label: 'Folder Options', icon: GEAR_ICON, children: optionItems.value },
-    { label: 'Sort', icon: 'M3 16l4 4 4-4|M7 20V4|M11 4h10|M11 8h7|M11 12h4', children: sortItems.value },
+    { label: '操作', icon: PLAY_ICON, children: actionItems.value },
+    { label: '文件夹选项', icon: GEAR_ICON, children: optionItems.value },
+    { label: '排序', icon: 'M3 16l4 4 4-4|M7 20V4|M11 4h10|M11 8h7|M11 12h4', children: sortItems.value },
   );
 
   return items;
@@ -286,11 +286,11 @@ const actionItems = computed<KebabMenuItem[]>(() => {
   const updateChecksUnknownOrOn = !settingsStore.loaded || settingsStore.enableUpdateChecks;
   if (updateChecksUnknownOrOn && folderImages.value.length > 0) {
     items.push({
-      label: folderUpdateCheckRunning.value ? 'Checking for Updates…' : 'Check for Updates',
+      label: folderUpdateCheckRunning.value ? '正在检查更新…' : '检查更新',
       icon: REFRESH_ICON,
       action: 'check-updates',
       disabled: !settingsStore.loaded,
-      title: settingsStore.loaded ? undefined : 'Loading settings…',
+      title: settingsStore.loaded ? undefined : '正在加载设置…',
     });
   }
 
@@ -319,7 +319,7 @@ const sortItems = computed<KebabMenuItem[]>(() => {
   return SORT_MODE_OPTIONS.map((opt) => {
     const followsToolbar = opt.value === 'manual' && manualResolvesTo && manualResolvesTo.value !== 'manual';
     return {
-      label: followsToolbar ? `Toolbar sort: ${manualResolvesTo.label}` : opt.label,
+      label: followsToolbar ? `工具栏排序：${manualResolvesTo.label}` : opt.label,
       icon: opt.icon,
       action: `sort:${opt.value}`,
       class: props.folder.sort_mode === opt.value ? 'text-primary font-semibold' : '',
@@ -329,12 +329,12 @@ const sortItems = computed<KebabMenuItem[]>(() => {
 
 /** Settings for the folder and its stack's autostart, and deleting it. */
 const optionItems = computed<KebabMenuItem[]>(() => {
-  const items: KebabMenuItem[] = [{ label: 'Edit Folder', icon: EDIT_ICON, action: 'edit' }];
+  const items: KebabMenuItem[] = [{ label: '编辑文件夹', icon: EDIT_ICON, action: 'edit' }];
 
   if (props.folder.compose_project) {
     const { composeDisabled, composeReason } = composeAvailability(props.folder.compose_project);
     items.push(
-      { label: composeStack.value?.autostart ? 'Disable Stack Autostart' : 'Enable Stack Autostart', icon: REFRESH_ICON, action: 'compose-toggle-autostart', disabled: composeDisabled, title: composeReason },
+      { label: composeStack.value?.autostart ? '禁用堆栈自动启动' : '启用堆栈自动启动', icon: REFRESH_ICON, action: 'compose-toggle-autostart', disabled: composeDisabled, title: composeReason },
     );
   }
 
@@ -345,8 +345,8 @@ const optionItems = computed<KebabMenuItem[]>(() => {
   });
   if (hasDockermanContainers && !props.folder.compose_project) {
     items.push(
-      { label: allAutostart.value ? 'Disable Autostart (all)' : 'Enable Autostart (all)', icon: AUTOSTART_ICON, action: 'toggle-folder-autostart', class: allAutostart.value ? 'text-success' : '' },
-      { label: `Autostart Delay: ${folderAutostartDelay.value}s`, icon: STOPWATCH_ICON, action: 'set-folder-autostart-delay', show: allAutostart.value },
+      { label: allAutostart.value ? '禁用自动启动（全部）' : '启用自动启动（全部）', icon: AUTOSTART_ICON, action: 'toggle-folder-autostart', class: allAutostart.value ? 'text-success' : '' },
+      { label: `自动启动延迟：${folderAutostartDelay.value}s`, icon: STOPWATCH_ICON, action: 'set-folder-autostart-delay', show: allAutostart.value },
     );
   }
 
@@ -354,7 +354,7 @@ const optionItems = computed<KebabMenuItem[]>(() => {
   return [
     ...byLabel(items),
     { divider: true },
-    { label: 'Delete Folder', icon: TRASH_ICON, action: 'delete', class: 'hover:text-error' },
+    { label: '删除文件夹', icon: TRASH_ICON, action: 'delete', class: 'hover:text-error' },
   ];
 });
 

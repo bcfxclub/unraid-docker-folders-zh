@@ -144,17 +144,17 @@ interface MountAdvice {
  */
 const SHARE_ADVICE: MountAdvice = {
   path: '/mnt/user/<share>',
-  note: 'Covers every share on the array. Name the one the application uses.',
+  note: '涵盖阵列上的每一个共享文件夹。请指定该应用实际使用的那一个。',
 };
 
 const BROAD_PATH_ADVICE: Record<string, MountAdvice> = {
-  '/': { note: 'Covers the whole server. Mount the folders the application uses instead.' },
+  '/': { note: '涵盖整个服务器。请改为挂载该应用实际使用的文件夹。' },
   '/boot': {
-    note: 'The flash drive that holds the server configuration. Writing here can stop the server from booting.',
+    note: '这是保存服务器配置的闪存盘。在此处写入可能导致服务器无法启动。',
   },
-  '/etc': { note: 'The server configuration files. Name the one file it reads, or remove the mount.' },
+  '/etc': { note: '服务器的配置文件。请指定它读取的那一个文件，或移除该挂载。' },
   '/var/run': {
-    note: 'The server sockets, including the Docker socket. Name the one it needs, or remove the mount.',
+    note: '服务器的套接字，包括 Docker 套接字。请指定它需要的那一个，或移除该挂载。',
   },
   '/mnt': SHARE_ADVICE,
   '/mnt/user': SHARE_ADVICE,
@@ -347,29 +347,29 @@ interface CapAdvice {
 const CAP_ADVICE: Record<string, CapAdvice> = {
   ALL: {
     add: '--cap-add=<capability>',
-    note: 'ALL grants every capability, which is privileged mode by another name. Name the one or two the application documents.',
+    note: 'ALL 授予所有能力，等同于另一种形式的特权模式。请指定应用文档中列出的那一两个能力。',
   },
   SYS_ADMIN: {
     // No replacement. SYS_ADMIN is the capability that gets a process out of
     // the container, so nothing smaller stands in for it, and no device does
     // either: on Unraid a container mounts as real root, so a FUSE tool needs
     // the capability as well as /dev/fuse.
-    note: 'SYS_ADMIN covers most of what privileged mode does and has no narrower substitute. If the container genuinely mounts a FUSE filesystem, for example rclone or mergerfs, it needs --device=/dev/fuse as well as the capability, and the only real fix is an image that does not ask for either.',
+    note: 'SYS_ADMIN 涵盖了特权模式的大部分功能，且没有更窄的替代方案。如果容器确实挂载了 FUSE 文件系统（例如 rclone 或 mergerfs），那么它除了该能力外还需要 --device=/dev/fuse，而真正的解决之道是使用一个不要求这两者的镜像。',
   },
   SYS_MODULE: {
-    note: 'SYS_MODULE lets the container load kernel modules into the host kernel, which ends container isolation. Almost nothing needs it.',
+    note: 'SYS_MODULE 允许容器向宿主机内核加载内核模块，这会破坏容器隔离。几乎没有任何应用需要它。',
   },
   NET_ADMIN: {
-    note: 'NET_ADMIN covers routing, firewall rules, and interface changes. If the container runs a VPN tunnel, it also needs --device=/dev/net/tun. If it only sends pings, NET_RAW covers that and is already on by default.',
+    note: 'NET_ADMIN 涵盖路由、防火墙规则和接口变更。如果容器运行 VPN 隧道，它还需要 --device=/dev/net/tun。如果它只是发送 ping，NET_RAW 即可满足，且该能力默认已开启。',
   },
   NET_RAW: {
-    note: 'NET_RAW is in Docker’s default set already, so adding it changes nothing.',
+    note: 'NET_RAW 已经在 Docker 的默认集合中，因此添加它不会带来任何变化。',
   },
   SYS_PTRACE: {
-    note: 'SYS_PTRACE lets the container inspect other processes. It belongs in a debugging session, not in a container that runs all the time.',
+    note: 'SYS_PTRACE 允许容器检查其他进程。它适用于调试会话，而不适合一直运行的容器。',
   },
   DAC_READ_SEARCH: {
-    note: 'DAC_READ_SEARCH skips file read permission checks, so the container reads any file it can reach through a mount. Narrow the mount instead.',
+    note: 'DAC_READ_SEARCH 会跳过文件读取权限检查，因此容器可以读取其通过挂载所能触及的任何文件。应缩小挂载范围。',
   },
 };
 
@@ -393,14 +393,14 @@ function capabilityFinding(container: Container, capAdd: string[]): FindingRule 
   return {
     type: 'added-capabilities',
     severity: high.length > 0 ? 'critical' : 'warning',
-    title: high.length > 0 ? `Grants ${high.join(', ')}` : 'Adds Linux capabilities',
+    title: high.length > 0 ? `授予 ${high.join('、')}` : '添加了 Linux 能力',
     why:
       high.length > 0
-        ? 'These capabilities let the container mount filesystems and load kernel modules, which is a route out of the container onto the host.'
-        : 'Each added capability lifts one of the limits Docker puts on a container by default.',
+        ? '这些能力使容器能够挂载文件系统并加载内核模块，这正是逃离容器进入宿主机的途径。'
+        : '添加的每一项能力都会解除 Docker 默认施加在容器上的某个限制。',
     // Removal is the whole adjustment. Anything that reads like a safer
     // spelling of the same capability is false comfort.
-    fix: `Edit ${container.name} in Unraid, open Show more settings, and take the flag out of Extra Parameters. Start the container and watch the log: templates often carry a capability the application never asks for. If it does need it, the flag stays and the risk stays with it.`,
+    fix: `在 Unraid 中编辑 ${container.name}，打开“显示更多设置”，并将该标志从“额外参数”中移除。启动容器并观察日志：模板常常携带应用并不需要的某项能力。如果它确实需要，则保留该标志，相关风险也随之保留。`,
     detail: lines,
   };
 }
@@ -410,16 +410,16 @@ function socketMountFinding(mount: ContainerMount): FindingRule {
   return {
     type: 'docker-socket',
     severity: 'critical',
-    title: 'Mounts the Docker socket',
-    why: 'Access to the Docker socket is access to the host: anything that can talk to it can start a privileged container and read every file on the array.',
+    title: '挂载了 Docker 套接字',
+    why: '能够访问 Docker 套接字就等于能够访问宿主机：任何能与它通信的对象都可以启动一个特权容器并读取阵列上的每一个文件。',
     fix: readOnly
-      ? 'Remove the mount if the application does not need it. Read-only stops nothing on its own, because the socket takes commands over the same channel it answers on. If the application genuinely needs Docker, put a socket proxy in front that exposes only the endpoints it uses.'
-      : 'Remove the mount if the application does not need it. If it does, put a socket proxy in front that exposes only the endpoints it uses.',
+      ? '如果应用不需要该挂载，请将其移除。只读本身并不能阻止任何操作，因为该套接字通过它用来应答的同一通道接收命令。如果应用确实需要 Docker，请在其前置一个套接字代理，仅暴露它所使用的接口。'
+      : '如果应用不需要该挂载，请将其移除。如果需要，请在其前置一个套接字代理，仅暴露它所使用的接口。',
     detail: [
       {
-        remove: `${DOCKER_SOCKET} -> ${mount.Destination} (${readOnly ? 'Read Only' : 'Read/Write'})`,
+        remove: `${DOCKER_SOCKET} -> ${mount.Destination} (${readOnly ? '只读' : '读写'})`,
         removeNote: readOnly
-          ? 'Read-only changes nothing here, because the socket takes commands over the same channel it answers on.'
+          ? '只读在此处不起作用，因为该套接字通过它用来应答的同一通道接收命令。'
           : undefined,
       },
     ],
@@ -433,12 +433,12 @@ function hostNetworkFinding(container: Container, bound: PortOwners): FindingRul
     .sort((a, b) => a.port - b.port);
 
   const detail: FindingDetail[] = [
-    { remove: 'Network Type: host', add: 'Network Type: bridge' },
+    { remove: '网络类型：host', add: '网络类型：bridge' },
   ];
 
   if (exposed.length === 0) {
     detail.push({
-      note: 'The image declares no ports, so add a mapping for the port the application listens on, written as port:port.',
+      note: '该镜像未声明任何端口，因此请为应用监听的端口添加映射，格式为 port:port。',
     });
   } else {
     const ports = exposed.slice(0, MAX_SUGGESTED_PORTS);
@@ -450,22 +450,22 @@ function hostNetworkFinding(container: Container, bound: PortOwners): FindingRul
         // networking, so it belongs beside the suggestion.
         addNote:
           takenBy === null
-            ? `No other container is using ${hostPort}.`
-            : `${takenBy} is using ${port}, so this moves up to ${hostPort}.`,
+            ? `${hostPort} 没有其他容器在使用。`
+            : `${takenBy} 正在使用 ${port}，因此这里上移到 ${hostPort}。`,
       });
     }
     const rest = exposed.length - ports.length;
     if (rest > 0) {
-      detail.push({ note: `And ${rest} more exposed port${rest === 1 ? '' : 's'}.` });
+      detail.push({ note: `以及另外 ${rest} 个暴露的端口。` });
     }
   }
 
   return {
     type: 'host-network',
     severity: 'warning',
-    title: 'Uses host networking',
-    why: 'The container shares the host network stack, so every port it opens is reachable on the server and it can see traffic meant for other containers.',
-    fix: `Edit ${container.name} in Unraid and change the network, then add a port mapping for each port the application serves.`,
+    title: '使用主机网络',
+    why: '容器共享宿主机网络栈，因此它开放的每个端口在服务器上都可达，并且它能看到本应发往其他容器的流量。',
+    fix: `在 Unraid 中编辑 ${container.name} 并更改网络，然后为应用所服务的每个端口添加端口映射。`,
     detail,
   };
 }
@@ -482,13 +482,13 @@ function broadMountFindings(container: Container): FindingRule[] {
     {
       type: 'broad-mount',
       severity: critical ? 'critical' : 'warning',
-      title: 'Writable mount of a broad host path',
-      why: 'Host Path is a top level of the server, so the container can change every file under it. A container only needs the smallest folder it works on.',
-      fix: `Edit ${container.name} in Unraid and change the volume mapping. Point Host Path at the smallest folder the application needs, such as one share, or set Access Mode to Read Only.`,
+      title: '可写挂载了宽泛的主机路径',
+      why: '主机路径是服务器的顶层目录，因此容器可以修改其下的每一个文件。容器只需要它实际工作所处的最小文件夹。',
+      fix: `在 Unraid 中编辑 ${container.name} 并更改卷映射。将主机路径指向应用所需的最小文件夹（例如某个共享文件夹），或将访问模式设置为只读。`,
       detail: offenders.map((m) => {
         const advice = BROAD_PATH_ADVICE[m.Source];
         return {
-          remove: `${m.Source} -> ${m.Destination} (Read/Write)`,
+          remove: `${m.Source} -> ${m.Destination} (读写)`,
           // Only the new Host Path. The container path is not changing, so
           // repeating it on the right makes the reader diff two strings to
           // find the one field that moved.
@@ -632,7 +632,7 @@ export function folderConflicts(writers: MountWriter[]): FolderConflict[] {
 /** The identity line shown beside a container in the folder list. */
 export function describeWriter(writer: MountWriter): string {
   const umask = `umask ${describeUmask(writer.umask)}`;
-  return `${describeUser(writer.user)}, ${writer.umaskStated ? umask : `${umask} assumed`}`;
+  return `${describeUser(writer.user)}, ${writer.umaskStated ? umask : `${umask}（默认假定）`}`;
 }
 
 /**
@@ -649,15 +649,15 @@ export function conflictReason(conflict: FolderConflict): string {
 
   if (reason === 'group') {
     return (
-      `${creator.container} and ${names} share group ${creator.user.gid}, but ${creator.container} ` +
-      `creates files with umask ${describeUmask(creator.umask)}, which leaves them read-only to the ` +
-      'rest of that group.'
+      `${creator.container} 与 ${names} 同属组 ${creator.user.gid}，但 ${creator.container} ` +
+      `以 umask ${describeUmask(creator.umask)} 创建文件，导致这些文件对该组` +
+      '其余成员只读。'
     );
   }
 
   return (
-    `${creator.container} writes as ${describeUser(creator.user)} and ${names} under a different ` +
-    `group, so files ${creator.container} creates are not writable by the others.`
+    `${creator.container} 以 ${describeUser(creator.user)} 的身份写入，而 ${names} 属于不同的` +
+    `组，因此 ${creator.container} 创建的文件其他容器无法写入。`
   );
 }
 
@@ -673,13 +673,13 @@ function sharedMountFindings(container: Container, conflicts: FolderConflict[]):
   const detail: FindingDetail[] = shown.map((conflict) => {
     const own = conflict.writers.find((w) => w.container === container.name)!;
     return {
-      note: `${conflict.path}, written as ${describeWriter(own)}. ${conflictReason(conflict)}`,
+      note: `${conflict.path}，写入身份为 ${describeWriter(own)}。${conflictReason(conflict)}`,
     };
   });
 
   const rest = mine.length - shown.length;
   if (rest > 0) {
-    detail.push({ note: `And ${rest} more shared folder${rest === 1 ? '' : 's'}.` });
+    detail.push({ note: `以及另外 ${rest} 个共享文件夹。` });
   }
 
   const onlyUmask = mine.every((c) => c.reason === 'group');
@@ -689,12 +689,12 @@ function sharedMountFindings(container: Container, conflicts: FolderConflict[]):
       type: 'shared-mount-group',
       severity: 'warning',
       title: onlyUmask
-        ? 'Writes a shared folder the other containers cannot change'
-        : 'Shares a folder with a container in a different group',
+        ? '写入了其他容器无法修改的共享文件夹'
+        : '与处于不同组的容器共享文件夹',
       why: onlyUmask
-        ? 'Another container writes the same folder. The files created there are read-only to the rest of the group, so the other container cannot move or change them.'
-        : 'Two containers write the same folder under different groups. Unraid shares are group-owned, so a file one container creates is one the other cannot change.',
-      fix: 'One of these containers can fail to read or change what the other wrote in this folder. Which identity the folder should belong to depends on everything else these containers write, so the plugin does not pick one for you.',
+        ? '另一个容器也在写入同一个文件夹。在那里创建的文件对该组其余成员来说都是只读的，因此其他容器无法移动或修改它们。'
+        : '两个容器以不同的组写入同一个文件夹。Unraid 的共享文件夹按组归属，因此一个容器创建的文件，另一个容器无法修改。',
+      fix: '这些容器中的某一个可能无法读取或更改另一个在此文件夹中写入的内容。该文件夹应归属于哪个身份，取决于这些容器所写入的所有其他内容，因此插件不会替你做选择。',
       detail,
     },
   ];
@@ -715,13 +715,13 @@ export function findingsFor(
     findings.push({
       type: 'privileged',
       severity: 'critical',
-      title: 'Runs in privileged mode',
-      why: 'A privileged container gets every Linux capability and access to the host devices, so a compromise inside it is a compromise of the server.',
-      fix: `Edit ${container.name} in Unraid and open Show more settings. Add a capability back only if the application documents needing one.`,
+      title: '以特权模式运行',
+      why: '特权容器拥有全部 Linux 能力以及访问宿主机设备的权限，因此容器内部一旦被攻破，就等于服务器被攻破。',
+      fix: `在 Unraid 中编辑 ${container.name} 并打开“显示更多设置”。仅当应用文档明确要求某项能力时，再将其添加回来。`,
       detail: [
         {
-          remove: 'Privileged: on',
-          add: 'Privileged: off',
+          remove: '特权模式：开',
+          add: '特权模式：关',
         },
         {
           add: '--cap-add=<capability>',
@@ -730,7 +730,7 @@ export function findingsFor(
           // defaults are what an image needs to drop from root to PUID at
           // startup.
           addNote:
-            'Only if the application documents one. Put it in Extra Parameters. Most containers need nothing here.',
+            '仅当应用文档明确要求时。将其放入“额外参数”中。大多数容器在此处不需要任何设置。',
         },
       ],
     });
@@ -749,14 +749,14 @@ export function findingsFor(
     findings.push({
       type: 'forced-root',
       severity: 'warning',
-      title: 'Forced to run as root',
-      why: 'The template pins the container to uid 0, so the application keeps full root inside the container even if the image was built to drop to PUID and PGID.',
-      fix: `Edit ${container.name} in Unraid, open Show more settings, and clear the flag from Extra Parameters.`,
+      title: '被强制以 root 运行',
+      why: '模板将容器固定为 uid 0，因此即使镜像本应降级到 PUID 和 PGID，应用仍会在容器内保持完整的 root 权限。',
+      fix: `在 Unraid 中编辑 ${container.name}，打开“显示更多设置”，并从“额外参数”中清除该标志。`,
       detail: [
         {
           remove: `--user=${container.user}`,
           removeNote:
-            'Most images pick the right user themselves, and linuxserver.io images take PUID and PGID instead, so there is usually nothing to put back.',
+            '大多数镜像会自行选择正确的用户，而 linuxserver.io 的镜像则改用 PUID 和 PGID，因此通常无需回填任何内容。',
         },
       ],
     });

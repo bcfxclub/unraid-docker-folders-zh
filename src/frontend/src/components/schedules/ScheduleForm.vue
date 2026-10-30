@@ -1,31 +1,30 @@
 <template>
   <div class="flex flex-col gap-3" :class="embedded ? '' : 'p-3 rounded border border-border bg-bg'">
     <div v-if="!embedded" class="flex items-center justify-between gap-2">
-      <h3 class="text-sm font-semibold text-text m-0">{{ editId ? 'Edit Schedule' : 'New Schedule' }}</h3>
-      <button class="icon-btn text-text-secondary hover:text-text" aria-label="Cancel" title="Cancel" @click="$emit('cancel')">
+      <h3 class="text-sm font-semibold text-text m-0">{{ editId ? '编辑计划任务' : '新建计划任务' }}</h3>
+      <button class="icon-btn text-text-secondary hover:text-text" aria-label="取消" title="取消" @click="$emit('cancel')">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
       </button>
     </div>
 
     <div class="flex flex-col gap-1">
-      <label :for="`${uid}-name`" class="text-sm font-medium text-text">Name</label>
-      <input :id="`${uid}-name`" v-model="form.name" class="form-input" placeholder="e.g. Nightly backup" />
+      <label :for="`${uid}-name`" class="text-sm font-medium text-text">名称</label>
+      <input :id="`${uid}-name`" v-model="form.name" class="form-input" placeholder="例如：夜间备份" />
     </div>
 
     <div class="flex flex-col gap-1">
-      <label :for="`${uid}-action`" class="text-sm font-medium text-text">Action</label>
+      <label :for="`${uid}-action`" class="text-sm font-medium text-text">操作</label>
       <select :id="`${uid}-action`" v-model="form.action" class="form-input">
-        <option value="start">Start</option>
-        <option value="stop">Stop</option>
-        <option value="pause">Pause</option>
-        <option value="resume">Resume</option>
-        <option value="restart">Restart</option>
-        <option value="backup">Backup</option>
-        <option v-if="targetType === 'container'" value="update">Update</option>
+        <option value="start">启动</option>
+        <option value="stop">停止</option>
+        <option value="pause">暂停</option>
+        <option value="resume">恢复</option>
+        <option value="restart">重启</option>
+        <option value="backup">备份</option>
+        <option v-if="targetType === 'container'" value="update">更新</option>
       </select>
       <div v-if="form.action === 'update'" class="text-xs text-text-secondary">
-        Checks for a newer image. If one exists, pulls it and recreates the container. A run more than
-        5 minutes late is skipped.
+        检查是否有更新的镜像。若有，将拉取并重建容器。延迟超过 5 分钟才执行的任务将被跳过。
       </div>
     </div>
 
@@ -34,7 +33,7 @@
     <!-- Backup config -->
     <template v-if="form.action === 'backup'">
       <div class="flex flex-col gap-3 p-3 rounded border border-border bg-bg-card">
-        <h4 class="text-sm font-semibold text-text m-0">Backup Configuration</h4>
+        <h4 class="text-sm font-semibold text-text m-0">备份配置</h4>
 
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-2">
@@ -45,20 +44,19 @@
               class="cursor-pointer"
               @change="pgModeTouched = true"
             />
-            <label :for="`${uid}-pg-mode`" class="text-sm text-text cursor-pointer">Postgres backup mode</label>
-            <span v-if="pgDetected" class="text-xs text-text-secondary">Postgres detected</span>
+            <label :for="`${uid}-pg-mode`" class="text-sm text-text cursor-pointer">Postgres 备份模式</label>
+            <span v-if="pgDetected" class="text-xs text-text-secondary">已检测到 Postgres</span>
           </div>
           <div class="text-xs text-text-secondary">
-            Dumps each database with pg_dump while the container runs. Use this instead of copying the
-            data folder, which can give a backup that does not restore.
+            在容器运行时使用 pg_dump 转储每个数据库。请使用此方式，而非复制数据文件夹——直接复制可能导致备份无法恢复。
           </div>
         </div>
 
         <template v-if="pgMode">
           <div v-if="targetType === 'stack'" class="flex flex-col gap-1">
-            <label :for="`${uid}-pg-service`" class="text-xs text-text-secondary">Service</label>
+            <label :for="`${uid}-pg-service`" class="text-xs text-text-secondary">服务</label>
             <select :id="`${uid}-pg-service`" v-model="pgService" class="form-input compact">
-              <option v-if="!stackServices.length" value="" disabled>No running services found</option>
+              <option v-if="!stackServices.length" value="" disabled>未找到运行中的服务</option>
               <option v-for="svc in stackServices" :key="svc.service" :value="svc.service">
                 {{ svc.service }} ({{ svc.image }})
               </option>
@@ -66,17 +64,15 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <label :for="`${uid}-pg-credentials`" class="text-xs text-text-secondary">Login</label>
+            <label :for="`${uid}-pg-credentials`" class="text-xs text-text-secondary">登录</label>
             <select :id="`${uid}-pg-credentials`" v-model="pgCredentials" class="form-input compact">
-              <option value="env">From the container's environment</option>
-              <option value="custom">Custom user and password</option>
+              <option value="env">来自容器的环境变量</option>
+              <option value="custom">自定义用户和密码</option>
             </select>
             <div v-if="pgCredentials === 'env'" class="text-xs text-text-secondary">
-              Every run reads POSTGRES_USER<template v-if="pgInfo"> ({{ pgInfo.env_user }})</template> and
-              POSTGRES_PASSWORD from the container. Nothing is saved.
+              每次运行都会从容器读取 POSTGRES_USER<template v-if="pgInfo"> ({{ pgInfo.env_user }})</template> 和 POSTGRES_PASSWORD。不会保存任何凭据。
               <template v-if="pgInfo && !pgInfo.has_env_password">
-                This container sets no POSTGRES_PASSWORD, so the dump connects without one. That works when
-                the image trusts connections from inside the container, as the official image does.
+                该容器未设置 POSTGRES_PASSWORD，因此转储会在无密码情况下连接。当镜像信任来自容器内部的连接时（如官方镜像），这样可以正常工作。
               </template>
             </div>
           </div>
@@ -84,7 +80,7 @@
           <div v-if="pgCredentials === 'custom'" class="flex flex-col gap-1">
             <div class="flex gap-3">
               <div class="flex-1 flex flex-col gap-1">
-                <label :for="`${uid}-pg-user`" class="text-xs text-text-secondary">User</label>
+                <label :for="`${uid}-pg-user`" class="text-xs text-text-secondary">用户</label>
                 <input
                   :id="`${uid}-pg-user`"
                   v-model="pgUser"
@@ -94,40 +90,40 @@
                 />
               </div>
               <div class="flex-1 flex flex-col gap-1">
-                <label :for="`${uid}-pg-password`" class="text-xs text-text-secondary">Password</label>
+                <label :for="`${uid}-pg-password`" class="text-xs text-text-secondary">密码</label>
                 <input
                   :id="`${uid}-pg-password`"
                   v-model="pgPassword"
                   type="password"
                   class="form-input compact"
                   autocomplete="new-password"
-                  :placeholder="pgPasswordSet ? 'Saved. Leave empty to keep it.' : ''"
+                  :placeholder="pgPasswordSet ? '已保存。留空以保持不变。' : ''"
                 />
               </div>
             </div>
             <div class="text-xs text-text-secondary">
-              The password is saved in the plugin database on the flash drive, and is never shown again.
+              密码保存在闪存盘上的插件数据库中，之后不会再显示。
             </div>
           </div>
 
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-2">
-              <label class="text-xs text-text-secondary">Databases</label>
+              <label class="text-xs text-text-secondary">数据库</label>
               <button
                 class="nav-btn"
                 :class="{ 'opacity-50 cursor-not-allowed': !pgCanLoad }"
                 :disabled="!pgCanLoad"
                 @click="loadDatabases"
               >
-                {{ pgLoading ? 'Loading...' : 'Load databases' }}
+                {{ pgLoading ? '加载中…' : '加载数据库' }}
               </button>
               <button v-if="pgDatabaseOptions.length > 1" class="nav-btn" @click="toggleAllDatabases">
-                {{ pgAllSelected ? 'Select none' : 'Select all' }}
+                {{ pgAllSelected ? '取消全选' : '全选' }}
               </button>
             </div>
             <div v-if="pgLoadError" class="text-xs text-error">{{ pgLoadError }}</div>
             <div v-else-if="pgLoaded" class="text-xs text-text-secondary">
-              Connected. Found {{ pgDatabaseOptions.length }} database{{ pgDatabaseOptions.length === 1 ? '' : 's' }}.
+              已连接。找到 {{ pgDatabaseOptions.length }} 个数据库。
             </div>
             <div v-if="pgDatabaseOptions.length" class="flex flex-col gap-1 p-2 rounded border border-border">
               <div v-for="db in pgDatabaseOptions" :key="db" class="flex items-center gap-2">
@@ -142,16 +138,16 @@
               </div>
             </div>
             <div v-else-if="!pgLoaded && !pgLoadError" class="text-xs text-text-secondary">
-              Load the list to pick databases. The container must be running.
+              加载列表以选择数据库。容器必须处于运行状态。
             </div>
           </div>
         </template>
 
         <template v-else-if="targetType === 'container'">
           <div class="flex flex-col gap-2">
-            <label class="text-xs text-text-secondary">Paths to back up (container paths)</label>
+            <label class="text-xs text-text-secondary">要备份的路径（容器路径）</label>
             <div v-if="containerMounts.length" class="text-xs text-text-secondary">
-              Available mounts: {{ containerMounts.map(m => m.Destination).join(', ') }}
+              可用挂载：{{ containerMounts.map(m => m.Destination).join(', ') }}
             </div>
             <div v-for="(path, idx) in backupPaths" :key="idx" class="flex items-start gap-2">
               <PathSuggestInput
@@ -166,15 +162,15 @@
               />
               <button
                 class="icon-btn shrink-0 text-text-secondary hover:text-error"
-                aria-label="Remove path"
-                title="Remove path"
+                aria-label="删除路径"
+                title="删除路径"
                 @click="backupPaths.splice(idx, 1)"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
               </button>
             </div>
             <div>
-              <button class="nav-btn" @click="backupPaths.push('')">+ Add path</button>
+              <button class="nav-btn" @click="backupPaths.push('')">+ 添加路径</button>
             </div>
           </div>
         </template>
@@ -182,11 +178,11 @@
         <template v-else>
           <div v-for="(svc, idx) in backupServices" :key="idx" class="flex flex-col gap-2 p-3 rounded border border-border">
             <div class="flex items-center gap-2">
-              <input v-model="svc.service" class="form-input compact" placeholder="Service name" />
+              <input v-model="svc.service" class="form-input compact" placeholder="服务名称" />
               <button
                 class="icon-btn shrink-0 text-text-secondary hover:text-error"
-                aria-label="Remove service"
-                title="Remove service"
+                aria-label="删除服务"
+                title="删除服务"
                 @click="backupServices.splice(idx, 1)"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -209,8 +205,8 @@
               />
               <button
                 class="icon-btn shrink-0 text-text-secondary hover:text-error"
-                aria-label="Remove path"
-                title="Remove path"
+                aria-label="删除路径"
+                title="删除路径"
                 @click="svc.patterns.splice(pi, 1)"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -219,16 +215,16 @@
             <!-- margin lives on the wrapper: #…modern button.nav-btn sets margin:0,
                  which outranks a Tailwind ml-* utility -->
             <div class="ml-4">
-              <button class="nav-btn" @click="svc.patterns.push('')">+ Add path</button>
+              <button class="nav-btn" @click="svc.patterns.push('')">+ 添加路径</button>
             </div>
           </div>
           <div>
-            <button class="nav-btn" @click="backupServices.push({ service: '', patterns: [''] })">+ Add service</button>
+            <button class="nav-btn" @click="backupServices.push({ service: '', patterns: [''] })">+ 添加服务</button>
           </div>
         </template>
 
         <div v-if="!pgMode" class="flex flex-col gap-1">
-          <label :for="`${uid}-quiesce`" class="text-xs text-text-secondary">While the backup runs</label>
+          <label :for="`${uid}-quiesce`" class="text-xs text-text-secondary">备份运行期间</label>
           <select
             :id="`${uid}-quiesce`"
             v-model="backupQuiesce"
@@ -239,18 +235,16 @@
           </select>
           <div class="text-xs text-text-secondary">{{ QUIESCE_HELP[backupQuiesce] }}</div>
           <div v-if="autoPaused" class="text-xs text-text-secondary">
-            A database file sits in one of these folders, so this was set to Pause. Change it back if
-            the container does not write to that database.
+            这些文件夹中有一个数据库文件，因此已自动设为暂停。如果容器不写入该数据库，请改回。
           </div>
           <div v-if="sqliteWarning" class="text-xs text-warning">
-            A database file sits in one of these folders. Copying it while the container writes to it
-            can produce a backup that does not restore.
+            这些文件夹中有一个数据库文件。在容器写入它时进行复制，可能产生无法恢复的备份。
           </div>
         </div>
 
         <div class="flex gap-3">
           <div class="flex-1 flex flex-col gap-1">
-            <label :for="`${uid}-destination`" class="text-xs text-text-secondary">Destination (optional)</label>
+            <label :for="`${uid}-destination`" class="text-xs text-text-secondary">目标位置（可选）</label>
             <PathSuggestInput
               v-model="backupDestination"
               scope="host"
@@ -259,7 +253,7 @@
             />
           </div>
           <div class="w-24 flex flex-col gap-1">
-            <label :for="`${uid}-retention`" class="text-xs text-text-secondary">Keep</label>
+            <label :for="`${uid}-retention`" class="text-xs text-text-secondary">保留</label>
             <input
               :id="`${uid}-retention`"
               v-model.number="backupRetention"
@@ -275,20 +269,20 @@
 
     <div class="flex items-center gap-2">
       <input :id="`${uid}-enabled`" v-model="form.enabled" type="checkbox" class="cursor-pointer" />
-      <label :for="`${uid}-enabled`" class="text-sm text-text cursor-pointer">Enabled</label>
+      <label :for="`${uid}-enabled`" class="text-sm text-text cursor-pointer">已启用</label>
     </div>
 
     <div v-if="formError" class="text-sm text-error">{{ formError }}</div>
 
     <div class="flex justify-end gap-2 pt-3 border-t border-border">
-      <button class="nav-btn" @click="$emit('cancel')">Cancel</button>
+      <button class="nav-btn" @click="$emit('cancel')">取消</button>
       <button
         class="nav-btn active"
         :class="{ 'opacity-50 cursor-not-allowed': saving || saveBlocked }"
         :disabled="saving || saveBlocked"
         @click="save"
       >
-        {{ saving ? 'Saving...' : (editId ? 'Update' : 'Create') }}
+        {{ saving ? '保存中…' : (editId ? '更新' : '创建') }}
       </button>
     </div>
   </div>
@@ -463,7 +457,7 @@ async function loadDatabases() {
     });
     if (!ok || !data.success) {
       pgLoadError.value =
-        data.message || (typeof data.error === 'string' ? data.error : '') || error || 'Could not list the databases';
+        data.message || (typeof data.error === 'string' ? data.error : '') || error || '无法列出数据库';
       return;
     }
     pgLoadedDatabases.value = data.databases ?? [];
@@ -618,21 +612,21 @@ async function save() {
 
     if (pgMode.value) {
       if (props.targetType === 'stack' && !pgService.value) {
-        formError.value = 'Pick the service that runs Postgres';
+        formError.value = '请选择运行 Postgres 的服务';
         return;
       }
       const custom = pgCredentials.value === 'custom';
       const user = pgUser.value.trim();
       if (custom && !user) {
-        formError.value = 'Postgres user is required';
+        formError.value = 'Postgres 用户为必填项';
         return;
       }
       if (custom && !pgPassword.value && !pgPasswordSet.value) {
-        formError.value = 'Postgres password is required';
+        formError.value = 'Postgres 密码为必填项';
         return;
       }
       if (!pgDatabases.value.length) {
-        formError.value = 'Pick at least one database';
+        formError.value = '请至少选择一个数据库';
         return;
       }
       config.mode = 'postgres';
@@ -648,7 +642,7 @@ async function save() {
     } else if (props.targetType === 'container') {
       const paths = backupPaths.value.filter(p => p.trim());
       if (!paths.length) {
-        formError.value = 'At least one backup path is required';
+        formError.value = '至少需要一个备份路径';
         return;
       }
       config.paths = paths;
@@ -657,7 +651,7 @@ async function save() {
         .filter(s => s.service.trim() && s.patterns.some(p => p.trim()))
         .map(s => ({ service: s.service, patterns: s.patterns.filter(p => p.trim()) }));
       if (!services.length) {
-        formError.value = 'At least one service with paths is required';
+        formError.value = '至少需要一个带路径的服务';
         return;
       }
       config.paths = services;
@@ -679,13 +673,13 @@ async function save() {
     if (props.editId) {
       const ok = await scheduleStore.updateSchedule(props.editId, data);
       if (!ok) {
-        formError.value = 'Failed to update schedule';
+        formError.value = '更新计划任务失败';
         return;
       }
     } else {
       const result = await scheduleStore.createSchedule(data);
       if (!result.success) {
-        formError.value = result.error || 'Failed to create schedule';
+        formError.value = result.error || '创建计划任务失败';
         return;
       }
     }

@@ -8,8 +8,8 @@
   <div ref="menuRef" class="relative shrink-0">
     <button
       class="nav-btn"
-      :title="`Sort: ${activeOption.label}`"
-      :aria-label="`Sort: ${activeOption.label}`"
+      :title="`排序：${activeOption.label}`"
+      :aria-label="`排序：${activeOption.label}`"
       aria-haspopup="menu"
       :aria-expanded="menuOpen"
       @click.stop="menuOpen = !menuOpen"
@@ -83,7 +83,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
           <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
         </svg>
-        <span class="flex-1">Sort folders too</span>
+        <span class="flex-1">同时排序文件夹</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" :class="{ invisible: !sortFolders }" aria-hidden="true">
           <path d="M20 6L9 17l-5-5" />
         </svg>

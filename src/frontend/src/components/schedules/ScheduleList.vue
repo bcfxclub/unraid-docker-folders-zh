@@ -1,12 +1,12 @@
 <template>
   <BaseModal :is-open="isOpen" max-width="760px" @close="$emit('close')">
     <div class="flex justify-between items-center gap-3 p-4 sm:p-6 border-b border-border">
-      <h2 class="text-xl font-semibold text-text m-0 truncate">Schedules: {{ targetId }}</h2>
+      <h2 class="text-xl font-semibold text-text m-0 truncate">计划任务：{{ targetId }}</h2>
       <div class="flex items-center gap-2 shrink-0">
-        <button v-if="!formOpen" class="nav-btn active" @click="openCreate">+ Add Schedule</button>
+        <button v-if="!formOpen" class="nav-btn active" @click="openCreate">+ 添加计划任务</button>
         <button
           class="icon-btn icon-btn-round text-text-secondary hover:text-text"
-          aria-label="Close"
+          aria-label="关闭"
           @click="$emit('close')"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -42,10 +42,10 @@
         @saved="closeForm"
       />
 
-      <div v-if="loading" class="text-sm text-text-secondary py-4 text-center">Loading...</div>
+      <div v-if="loading" class="text-sm text-text-secondary py-4 text-center">加载中…</div>
 
       <div v-else-if="!targetSchedules.length" class="text-sm text-text-secondary py-4 text-center">
-        No schedules for this {{ targetType }}
+        该 {{ targetType }} 暂无计划任务
       </div>
 
       <div v-else class="flex flex-col gap-2">
@@ -73,13 +73,13 @@
               >
                 Postgres<template v-if="schedule.backup_config.postgres?.service"> ({{ schedule.backup_config.postgres.service }})</template>:
                 {{ schedule.backup_config.postgres?.databases.length ?? 0 }}
-                database{{ schedule.backup_config.postgres?.databases.length === 1 ? '' : 's' }}
+                个数据库
               </span>
             </div>
             <div class="text-xs text-text-secondary mt-0.5">
-              <span v-if="schedule.next_run_at">Next: {{ formatTime(schedule.next_run_at) }}</span>
+              <span v-if="schedule.next_run_at">下次运行：{{ formatTime(schedule.next_run_at) }}</span>
               <span v-if="schedule.last_run_status" class="ml-2">
-                Last:
+                上次运行：
                 <span :class="statusClass(schedule.last_run_status)">{{ schedule.last_run_status }}</span>
               </span>
             </div>
@@ -88,16 +88,16 @@
           <div class="flex items-center gap-1 shrink-0">
             <button
               class="icon-btn text-text-secondary hover:text-primary"
-              aria-label="Run now"
-              title="Run now"
+              aria-label="立即运行"
+              title="立即运行"
               @click="confirmRun = schedule.id"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4l14 8-14 8z" /></svg>
             </button>
             <button
               class="icon-btn text-text-secondary hover:text-text"
-              aria-label="History"
-              title="History"
+              aria-label="历史记录"
+              title="历史记录"
               @click="showHistory = schedule.id"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
@@ -105,16 +105,16 @@
             <button
               class="icon-btn text-text-secondary hover:text-text"
               :class="{ 'text-primary': editSchedule === schedule.id }"
-              aria-label="Edit"
-              title="Edit"
+              aria-label="编辑"
+              title="编辑"
               @click="openEdit(schedule.id)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
             </button>
             <button
               class="icon-btn text-text-secondary hover:text-error"
-              aria-label="Delete"
-              title="Delete"
+              aria-label="删除"
+              title="删除"
               @click="confirmDelete = schedule.id"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
@@ -136,9 +136,9 @@
 
     <ConfirmModal
       :is-open="confirmDelete !== null"
-      title="Delete Schedule"
-      message="Are you sure you want to delete this schedule?"
-      confirm-label="Delete"
+      title="删除计划任务"
+      message="确定要删除此计划任务吗？"
+      confirm-label="删除"
       variant="danger"
       @confirm="doDelete"
       @cancel="confirmDelete = null"
@@ -148,9 +148,9 @@
          a mis-click used to stop or restart a container with no warning. -->
     <ConfirmModal
       :is-open="confirmRun !== null"
-      title="Run Schedule Now"
+      title="立即运行计划任务"
       :message="runConfirmMessage"
-      confirm-label="Run now"
+      confirm-label="立即运行"
       @confirm="doRun"
       @cancel="confirmRun = null"
     />
@@ -201,28 +201,28 @@ function clearRecheck() {
 
 const runConfirmMessage = computed(() => {
   const schedule = scheduleStore.schedules.find((s) => s.id === confirmRun.value);
-  if (!schedule) return 'Run this schedule now?';
+  if (!schedule) return '立即运行此计划任务？';
   const action = SCHEDULE_ACTION_LABELS[schedule.action].toLowerCase();
-  return `Run "${schedule.name}" now? This will ${action} ${schedule.target_type} ${schedule.target_id} immediately.`;
+  return `立即运行 "${schedule.name}"？这将对 ${schedule.target_type} ${schedule.target_id} 执行${action}操作。`;
 });
 
 const runnerTitle = computed(() =>
-  scheduleStore.runner?.repaired ? 'Schedule runner reinstalled' : 'Scheduled actions are not running',
+  scheduleStore.runner?.repaired ? '计划任务运行器已重新安装' : '计划任务未运行',
 );
 
 const runnerMessage = computed(() => {
   const state = scheduleStore.runner;
   if (!state) return '';
   if (state.repaired) {
-    return 'The cron entry was missing and has been put back. Its first run takes up to a minute.';
+    return 'Cron 条目曾缺失，现已恢复。首次运行最多需要一分钟。';
   }
   if (!state.cron_installed) {
-    return 'The cron entry that runs schedules is missing, and it could not be reinstalled.';
+    return '运行计划任务的 Cron 条目已缺失，且无法重新安装。';
   }
   if (state.last_tick === null) {
-    return 'The schedule runner has not run since the server started.';
+    return '自服务器启动以来，计划任务运行器尚未运行。';
   }
-  return `The schedule runner last ran at ${formatTime(state.last_tick)}.`;
+  return `计划任务运行器上次运行时间为 ${formatTime(state.last_tick)}。`;
 });
 
 const targetSchedules = computed(() =>

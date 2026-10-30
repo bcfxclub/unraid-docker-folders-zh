@@ -2,7 +2,7 @@
   <div id="unraid-docker-folders-modern" class="unapi px-3 py-2 sm:px-6 sm:py-4 font-sans text-text bg-bg">
     <header class="flex flex-wrap justify-between items-center gap-y-3 gap-x-4 mb-4 pb-4 sm:mb-8 sm:pb-6 border-b-2 border-border">
       <div class="flex items-center gap-2 sm:gap-4 min-w-0">
-        <a href="/Settings/DockerFolders" class="nav-btn shrink-0" title="Settings">
+        <a href="/Settings/DockerFolders" class="nav-btn shrink-0" title="设置">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3" />
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -12,7 +12,7 @@
           @click="dragLocked = !dragLocked"
           class="nav-btn shrink-0"
           :class="{ warning: dragLocked }"
-          :title="dragLocked ? 'Unlock drag & drop' : 'Lock drag & drop'"
+          :title="dragLocked ? '解锁拖拽' : '锁定拖拽'"
         >
           <svg v-if="dragLocked" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
           <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" /></svg>
@@ -29,8 +29,8 @@
           :class="{ active: stacksPaneOpen }"
           :aria-pressed="stacksPaneOpen"
           aria-controls="stacks-pane"
-          aria-label="Compose stacks"
-          :title="stacksPaneOpen ? 'Hide compose stacks' : 'Show compose stacks'"
+          aria-label="Compose 堆栈"
+          :title="stacksPaneOpen ? '隐藏 Compose 堆栈' : '显示 Compose 堆栈'"
         >
           <IconComposeStack />
         </button>
@@ -47,7 +47,7 @@
         <input
           v-model="dockerStore.searchQuery"
           type="text"
-          placeholder="Search containers..."
+          placeholder="搜索容器..."
           class="form-input subtle"
           :style="{ paddingRight: `${searchOverlayWidth + 16}px` }"
         />
@@ -57,7 +57,7 @@
             v-if="dockerStore.searchQuery"
             @click="dockerStore.searchQuery = ''"
             class="text-text-secondary hover:text-text cursor-pointer bg-transparent border-none p-0 leading-none text-base"
-            title="Clear search"
+            title="清除搜索"
           >&times;</button>
         </div>
       </div>
@@ -68,7 +68,7 @@
             @click="viewMode = 'grid'"
             class="relative z-10 flex items-center justify-center w-8 h-7 rounded-full transition-colors duration-200 cursor-pointer"
             :class="viewMode === 'grid' ? 'text-primary-text' : 'text-text-secondary hover:text-text'"
-            title="Grid view"
+            title="网格视图"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7" />
@@ -81,7 +81,7 @@
             @click="viewMode = 'list'"
             class="relative z-10 flex items-center justify-center w-8 h-7 rounded-full transition-colors duration-200 cursor-pointer"
             :class="viewMode === 'list' ? 'text-primary-text' : 'text-text-secondary hover:text-text'"
-            title="List view"
+            title="列表视图"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="8" y1="6" x2="21" y2="6" />
@@ -164,8 +164,8 @@
           <LoadingSkeleton v-if="isLoading" :view="viewMode" />
 
           <div v-else-if="error" class="text-center py-8 px-6 text-error">
-            <p>Error: {{ error }}</p>
-            <button @click="loadData" class="mt-4 px-6 py-2 bg-error text-white border-none rounded cursor-pointer">Retry</button>
+            <p>错误：{{ error }}</p>
+            <button @click="loadData" class="mt-4 px-6 py-2 bg-error text-white border-none rounded cursor-pointer">重试</button>
           </div>
 
           <div v-else>
@@ -199,7 +199,7 @@
                 @click="unfolderedCollapsed = !unfolderedCollapsed"
               >
                 <ChevronIcon :expanded="!unfolderedCollapsed" />
-                <h2 class="text-sm font-semibold text-text">Unfoldered Containers</h2>
+                <h2 class="text-sm font-semibold text-text">未分类容器</h2>
                 <span class="inline-flex items-center justify-center min-w-6 h-6 px-2 bg-text-secondary text-white rounded-full text-xs font-semibold">{{
                   filteredUnfolderedContainers.length
                 }}</span>
@@ -236,12 +236,12 @@
 
             <!-- Empty State -->
             <div v-if="dockerStore.containerCount === 0" class="text-center py-8 px-6 text-text-secondary">
-              <p>No Docker containers found</p>
+              <p>未找到 Docker 容器</p>
             </div>
             <p
               v-else-if="dockerStore.stackFilter !== null && filteredFolders.length === 0 && filteredUnfolderedContainers.length === 0"
               class="py-2 text-sm text-text-secondary"
-            >{{ dockerStore.searchQuery.trim() ? `No containers in ${dockerStore.stackFilter} match the search` : `${dockerStore.stackFilter} has no containers. Use Stack Up in its menu to create them.` }}</p>
+            >{{ dockerStore.searchQuery.trim() ? `${dockerStore.stackFilter} 中没有容器匹配搜索` : `${dockerStore.stackFilter} 没有容器。请在其菜单中使用 Stack Up 创建。` }}</p>
           </div>
         </div>
       </div>
@@ -309,9 +309,9 @@
     <!-- BaseModal teleports its own overlay to the app root, so no wrapper needed -->
     <ConfirmModal
       :is-open="!!deletingFolderId"
-      title="Delete Folder"
-      :message="`Delete &quot;${deletingFolderName}&quot;? Containers will be moved to unfoldered.`"
-      confirm-label="Delete"
+      title="删除文件夹"
+      :message="`删除 &quot;${deletingFolderName}&quot;？容器将被移动到未分类。`"
+      confirm-label="删除"
       variant="danger"
       @confirm="confirmDeleteFolder"
       @cancel="deletingFolderId = null"
@@ -403,7 +403,7 @@ const securityModalContainer = ref<Container | null>(null);
 
 const securityButtonTitle = computed(() => {
   const n = securityStore.findingCount;
-  return `${n} security finding${n === 1 ? '' : 's'} on running containers`;
+  return `${n} 个安全发现，位于运行中的容器上`;
 });
 
 function openSecurity(containerId: string) {
@@ -597,9 +597,9 @@ const error = computed(() => dockerStore.error || folderStore.error);
 
 const searchCountLabel = computed(() => {
   const project = dockerStore.stackFilter;
-  if (project === null) return `${dockerStore.containerCount} containers, ${folderStore.folderCount} folders`;
+  if (project === null) return `${dockerStore.containerCount} 个容器，${folderStore.folderCount} 个文件夹`;
   const count = dockerStore.containersInStack(project).length;
-  return `${project}: ${count} ${count === 1 ? 'container' : 'containers'}`;
+  return `${project}：${count} 个容器`;
 });
 
 // Width of the counts and clear button drawn over the right end of the search field.
@@ -918,11 +918,11 @@ function handleUpdateButton() {
 }
 
 const updateButtonTitle = computed(() => {
-  if (!settingsStore.loaded) return 'Loading settings…';
-  if (updatesStore.checking) return 'Checking for image updates…';
+  if (!settingsStore.loaded) return '加载设置中…';
+  if (updatesStore.checking) return '正在检查镜像更新…';
   const n = updatesStore.updatesAvailableCount;
-  if (n === 0) return 'Check for image updates';
-  return n === 1 ? 'Review 1 available update' : `Review ${n} available updates`;
+  if (n === 0) return '检查镜像更新';
+  return n === 1 ? '查看 1 个可用更新' : `查看 ${n} 个可用更新`;
 });
 
 function handleUpdateAll() {

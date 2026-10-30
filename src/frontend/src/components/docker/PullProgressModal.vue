@@ -60,14 +60,14 @@
           </div>
 
           <p v-if="canOfferRecreate" class="text-xs text-text-secondary">
-            The container still runs the old image. Recreate it to apply the update.
+            容器仍在运行旧镜像。重建它以应用更新。
           </p>
         </div>
 
         <!-- Footer -->
         <div v-if="isDone" class="px-6 py-3 border-t border-border flex justify-end gap-2">
-          <button @click="handleClose" class="nav-btn">Close</button>
-          <button v-if="canOfferRecreate" @click="startRecreate" class="nav-btn active">Recreate</button>
+          <button @click="handleClose" class="nav-btn">关闭</button>
+          <button v-if="canOfferRecreate" @click="startRecreate" class="nav-btn active">重建</button>
         </div>
   </BaseModal>
 </template>
@@ -107,7 +107,7 @@ const settingsStore = useSettingsStore();
 const postPullAction = computed(() => settingsStore.postPullAction);
 
 const layers = ref<Record<string, LayerProgress>>({});
-const statusMessage = ref('Preparing...');
+const statusMessage = ref('准备中...');
 const errorMessage = ref('');
 const isComplete = ref(false);
 const isDone = ref(false);
@@ -116,8 +116,8 @@ const recreateMessage = ref('');
 let abortController: AbortController | null = null;
 
 const modalTitle = computed(() => {
-  if (props.recreateOnly) return 'Apply Update';
-  return props.force ? 'Force Update' : 'Pull Image Update';
+  if (props.recreateOnly) return '应用更新';
+  return props.force ? '强制更新' : '拉取镜像更新';
 });
 
 /**
@@ -150,7 +150,7 @@ const { inIframe } = parentModal;
 function openParent() {
   parentModal.open({
     kind: 'pull-progress',
-    title: `${props.recreateOnly || props.force ? modalTitle.value : 'Pull Image'} — ${props.image}`,
+    title: `${props.recreateOnly || props.force ? modalTitle.value : '拉取镜像'} — ${props.image}`,
     size: 'md',
     dismissable: false,
     fields: [
@@ -158,7 +158,7 @@ function openParent() {
       { type: 'progress-list', id: 'layers', items: [] },
     ],
     actions: [
-      { id: 'close', label: 'Close', variant: 'default', hidden: true },
+      { id: 'close', label: '关闭', variant: 'default', hidden: true },
     ],
   });
 }
@@ -202,9 +202,9 @@ function patchLayer(layerId: string) {
 function showCloseButton() {
   if (!inIframe) return;
   const actions: { id: string; label: string; variant: 'default' | 'primary' }[] = [
-    { id: 'close', label: 'Close', variant: 'default' },
+    { id: 'close', label: '关闭', variant: 'default' },
   ];
-  if (canOfferRecreate.value) actions.push({ id: 'recreate', label: 'Recreate', variant: 'primary' });
+  if (canOfferRecreate.value) actions.push({ id: 'recreate', label: '重建', variant: 'primary' });
   parentModal.update({ dismissable: true, actions });
 }
 
@@ -212,7 +212,7 @@ function hideActions() {
   if (!inIframe) return;
   parentModal.update({
     dismissable: false,
-    actions: [{ id: 'close', label: 'Close', variant: 'default', hidden: true }],
+    actions: [{ id: 'close', label: '关闭', variant: 'default', hidden: true }],
   });
 }
 
@@ -223,7 +223,7 @@ function handleClose() {
 
 function reset() {
   layers.value = {};
-  statusMessage.value = 'Preparing...';
+  statusMessage.value = '准备中...';
   errorMessage.value = '';
   isComplete.value = false;
   isDone.value = false;
@@ -233,7 +233,7 @@ function reset() {
 
 async function startPull() {
   reset();
-  if (props.recreateOnly) statusMessage.value = `Recreating ${props.containerName}...`;
+  if (props.recreateOnly) statusMessage.value = `正在重建 ${props.containerName}...`;
   if (inIframe) openParent();
   if (props.recreateOnly && props.containerId) {
     await runStream({ containerIds: [props.containerId], recreateOnly: true });
@@ -251,7 +251,7 @@ async function startRecreate() {
   if (!props.containerId) return;
   isDone.value = false;
   isComplete.value = false;
-  statusMessage.value = `Recreating ${props.containerName}...`;
+  statusMessage.value = `正在重建 ${props.containerName}...`;
   hideActions();
   patchStatus();
   await runStream({ containerIds: [props.containerId], recreateOnly: true });
@@ -265,8 +265,8 @@ async function runStream(opts: { containerIds?: string[]; recreate?: boolean; re
     await useBackend().streams.pull(props.image, opts, handleSSEEvent, controller.signal);
   } catch (e: any) {
     if (e.name !== 'AbortError') {
-      errorMessage.value = e.message || 'Pull failed';
-      statusMessage.value = 'Error';
+      errorMessage.value = e.message || '拉取失败';
+      statusMessage.value = '错误';
     }
   }
 
@@ -280,7 +280,7 @@ async function runStream(opts: { containerIds?: string[]; recreate?: boolean; re
 function handleSSEEvent(event: string, data: any) {
   switch (event) {
     case 'status':
-      statusMessage.value = data.message || 'Pulling...';
+      statusMessage.value = data.message || '正在拉取...';
       patchStatus();
       break;
     case 'progress':
@@ -301,7 +301,7 @@ function handleSSEEvent(event: string, data: any) {
       } else {
         statusMessage.value = recreateStatus.value === 'recreated'
           ? recreateMessage.value
-          : data.message || 'Pull complete';
+          : data.message || '拉取完成';
         isComplete.value = true;
       }
       patchStatus();
@@ -309,25 +309,25 @@ function handleSSEEvent(event: string, data: any) {
       break;
     case 'recreating':
       recreateStatus.value = 'recreating';
-      recreateMessage.value = data.message || `Recreating ${data.container}...`;
+      recreateMessage.value = data.message || `正在重建 ${data.container}...`;
       statusMessage.value = recreateMessage.value;
       patchStatus();
       break;
     case 'recreated':
       recreateStatus.value = 'recreated';
-      recreateMessage.value = data.message || `${data.container} updated`;
+      recreateMessage.value = data.message || `${data.container} 已更新`;
       statusMessage.value = recreateMessage.value;
       patchStatus();
       break;
     case 'recreate_error':
       recreateStatus.value = 'recreate_error';
-      recreateMessage.value = data.message || `Failed to recreate ${data.container}`;
+      recreateMessage.value = data.message || `重建 ${data.container} 失败`;
       statusMessage.value = recreateMessage.value;
       patchStatus();
       break;
     case 'error':
-      errorMessage.value = data.message || 'Pull failed';
-      statusMessage.value = 'Error';
+      errorMessage.value = data.message || '拉取失败';
+      statusMessage.value = '错误';
       patchStatus();
       break;
     case 'done':

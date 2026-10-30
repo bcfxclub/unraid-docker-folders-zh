@@ -188,7 +188,7 @@ export function unitReleaseSummary(
     .slice(0, MAX_NAMED_RELEASES)
     .map((r) => (r.tag ? `${r.repoName} ${r.tag}` : r.repoName));
   const remaining = releases.length - named.length;
-  if (remaining > 0) named.push(`+${remaining} more`);
+  if (remaining > 0) named.push(`+${remaining} 更多`);
 
   return named.join(' · ');
 }

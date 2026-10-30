@@ -38,15 +38,15 @@
         </div>
 
         <p v-if="recreatableUnits.length > 0" class="px-6 pb-3 text-xs text-text-secondary">
-          The updated containers still run their old images. Recreate them to apply the updates.
+          已更新的容器仍在运行旧镜像。重建它们以应用更新。
         </p>
 
         <!-- Footer -->
         <div class="px-6 py-3 border-t border-border flex justify-end">
           <div class="flex gap-2">
-            <button v-if="!allDone" @click="cancelBatch" class="nav-btn">Cancel</button>
-            <button v-if="allDone" @click="handleClose" class="nav-btn">Close</button>
-            <button v-if="recreatableUnits.length > 0" @click="startRecreate" class="nav-btn active">Recreate</button>
+            <button v-if="!allDone" @click="cancelBatch" class="nav-btn">取消</button>
+            <button v-if="allDone" @click="handleClose" class="nav-btn">关闭</button>
+            <button v-if="recreatableUnits.length > 0" @click="startRecreate" class="nav-btn active">重建</button>
           </div>
         </div>
   </BaseModal>
@@ -116,11 +116,11 @@ const recreatableUnits = computed(() => {
 
 function statusLabel(id: string): string {
   const result = unitResults.value[id];
-  if (result === 'success') return 'Done';
-  if (result === 'error') return 'Error';
-  if (result === 'cancelled') return 'Skipped';
-  if (unitRunning.value[id]) return 'Updating';
-  return 'Pending';
+  if (result === 'success') return '完成';
+  if (result === 'error') return '错误';
+  if (result === 'cancelled') return '已跳过';
+  if (unitRunning.value[id]) return '更新中';
+  return '等待中';
 }
 
 function statusLabelClass(id: string): string {
@@ -152,11 +152,11 @@ function unitPercent(id: string): number {
 
 function unitStatusText(id: string): string {
   const result = unitResults.value[id];
-  if (result === 'success') return 'Done';
-  if (result === 'error') return unitErrors.value[id] || 'Error';
-  if (result === 'cancelled') return 'Skipped';
-  if (unitRunning.value[id]) return unitStatus.value[id] || 'Updating...';
-  return 'Pending';
+  if (result === 'success') return '完成';
+  if (result === 'error') return unitErrors.value[id] || '错误';
+  if (result === 'cancelled') return '已跳过';
+  if (unitRunning.value[id]) return unitStatus.value[id] || '更新中...';
+  return '等待中';
 }
 
 function buildProgressItems() {
@@ -194,15 +194,15 @@ function openParent() {
       { type: 'progress-list', id: 'units', items: buildProgressItems() },
     ],
     actions: [
-      { id: 'cancel', label: 'Cancel', variant: 'default' },
+      { id: 'cancel', label: '取消', variant: 'default' },
     ],
   });
 }
 
 function modalTitle(): string {
   return allDone.value
-    ? 'Update Complete'
-    : `Updating Containers (${completedCount.value}/${props.units.length})`;
+    ? '更新完成'
+    : `正在更新容器（${completedCount.value}/${props.units.length}）`;
 }
 
 function patchAll() {
@@ -238,9 +238,9 @@ function patchUnit(unit: UpdateUnit) {
 function showCloseAction() {
   if (!inIframe) return;
   const actions: { id: string; label: string; variant: 'default' | 'primary' }[] = [
-    { id: 'close', label: 'Close', variant: 'default' },
+    { id: 'close', label: '关闭', variant: 'default' },
   ];
-  if (recreatableUnits.value.length > 0) actions.push({ id: 'recreate', label: 'Recreate', variant: 'primary' });
+  if (recreatableUnits.value.length > 0) actions.push({ id: 'recreate', label: '重建', variant: 'primary' });
   parentModal.update({ dismissable: true, actions });
 }
 
@@ -289,7 +289,7 @@ function applyEvent(
 
   switch (event) {
     case 'status':
-      setStatus(id, data.message || 'Updating...');
+      setStatus(id, data.message || '更新中...');
       break;
 
     // pull.php: per-layer download progress.
@@ -311,7 +311,7 @@ function applyEvent(
     case 'phase': {
       const percent = data.phase === 'starting' ? 80 : 40;
       unitLayers.value = { ...unitLayers.value, [id]: { phase: { status: data.phase || '', current: 0, total: 0, percent } } };
-      setStatus(id, data.message || data.phase || 'Updating...');
+      setStatus(id, data.message || data.phase || '更新中...');
       break;
     }
 
@@ -330,7 +330,7 @@ function applyEvent(
 
     case 'recreate_error':
       unitRecreate.value = { ...unitRecreate.value, [id]: data.message || '' };
-      unitErrors.value = { ...unitErrors.value, [id]: data.message || 'Recreate failed' };
+      unitErrors.value = { ...unitErrors.value, [id]: data.message || '重建失败' };
       break;
 
     // The pull went through, but a container that failed to recreate still
@@ -339,7 +339,7 @@ function applyEvent(
       return unitErrors.value[id] ? 'error' : 'success';
 
     case 'error':
-      unitErrors.value = { ...unitErrors.value, [id]: data.message || 'Update failed' };
+      unitErrors.value = { ...unitErrors.value, [id]: data.message || '更新失败' };
       return 'error';
   }
 
@@ -348,7 +348,7 @@ function applyEvent(
 
 async function runUnit(unit: UpdateUnit, recreate = false): Promise<UnitResult> {
   unitRunning.value = { ...unitRunning.value, [unit.id]: true };
-  setStatus(unit.id, 'Preparing...');
+  setStatus(unit.id, '准备中...');
   patchUnit(unit);
 
   const controller = new AbortController();
@@ -390,7 +390,7 @@ async function runUnit(unit: UpdateUnit, recreate = false): Promise<UnitResult> 
     // never set unitErrors for these two cases, unlike the single-unit
     // PullProgressModal/ComposeProgressModal, which do show them.
     if (e instanceof SseHttpError || e instanceof SseNoStreamError) return 'error';
-    unitErrors.value = { ...unitErrors.value, [unit.id]: e.message || 'Update failed' };
+    unitErrors.value = { ...unitErrors.value, [unit.id]: e.message || '更新失败' };
     return 'error';
   } finally {
     controllers.delete(controller);
@@ -465,10 +465,10 @@ async function startRecreate() {
   unitStatus.value = without(unitStatus.value);
 
   if (inIframe) {
-    parentModal.update({
-      dismissable: false,
-      actions: [{ id: 'cancel', label: 'Cancel', variant: 'default' }],
-    });
+      parentModal.update({
+        dismissable: false,
+        actions: [{ id: 'cancel', label: '取消', variant: 'default' }],
+      });
   }
   patchAll();
 

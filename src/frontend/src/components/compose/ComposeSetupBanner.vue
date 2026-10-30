@@ -6,7 +6,7 @@
       <line x1="12" y1="9" x2="12" y2="13" />
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
-    <span class="text-text flex-1">Docker Compose is not installed. Install it to manage compose stacks.</span>
+    <span class="text-text flex-1">Docker Compose 未安装。请安装以管理 Compose 堆栈。</span>
     <button
       @click="install"
       :disabled="composeStore.installingBinary"
@@ -17,9 +17,9 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
         </svg>
-        Installing...
+        正在安装…
       </template>
-      <template v-else>Install Docker Compose</template>
+      <template v-else>安装 Docker Compose</template>
     </button>
   </div>
 
@@ -30,7 +30,7 @@
       <line x1="12" y1="8" x2="12" y2="12" />
       <line x1="12" y1="16" x2="12.01" y2="16" />
     </svg>
-    <span class="text-text flex-1">Compose Manager plugin is installed. Stack management is read-only — uninstall it to manage stacks here.</span>
+    <span class="text-text flex-1">已安装 Compose Manager 插件。堆栈管理为只读模式——卸载它才能在此处管理堆栈。</span>
   </div>
 
   <!-- Compose plugin data migration banner -->
@@ -40,27 +40,27 @@
       <polyline points="17 8 12 3 7 8" />
       <line x1="12" y1="3" x2="12" y2="15" />
     </svg>
-    <span class="text-text flex-1">Compose Manager plugin data detected. Import your existing stacks?</span>
+    <span class="text-text flex-1">检测到 Compose Manager 插件数据。是否导入现有堆栈？</span>
     <button
       @click="handleImport"
       :disabled="importing"
       class="px-4 py-1.5 rounded text-sm font-medium cursor-pointer bg-primary text-primary-text border-none hover:brightness-90 transition disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
     >
-      {{ importing ? 'Importing...' : 'Import Stacks' }}
+      {{ importing ? '正在导入…' : '导入堆栈' }}
     </button>
     <button
       @click="dismissImport"
       class="px-3 py-1.5 rounded text-sm font-medium cursor-pointer bg-border text-text border-none hover:brightness-90 transition shrink-0"
-    >Dismiss</button>
+    >忽略</button>
   </div>
 
   <!-- Import result -->
   <div v-if="importResult" class="flex items-center gap-2 px-4 py-2 mb-4 rounded text-sm" :class="importResult.success ? 'bg-green-500/10 border border-green-500/30 text-green-400' : 'bg-error/10 border border-error/30 text-error'">
     <template v-if="importResult.success">
-      Imported {{ importResult.stacks_imported }} stack(s), {{ importResult.stacks_skipped }} skipped.
+      已导入 {{ importResult.stacks_imported }} 个堆栈，跳过 {{ importResult.stacks_skipped }} 个。
     </template>
     <template v-else>
-      Import failed: {{ importResult.errors?.join(', ') || 'Unknown error' }}
+      导入失败：{{ importResult.errors?.join(', ') || '未知错误' }}
     </template>
   </div>
 
@@ -92,7 +92,7 @@ async function install() {
   installError.value = null;
   const success = await composeStore.installBinary();
   if (!success) {
-    installError.value = composeStore.error || 'Failed to install Docker Compose';
+    installError.value = composeStore.error || '安装 Docker Compose 失败';
   }
 }
 

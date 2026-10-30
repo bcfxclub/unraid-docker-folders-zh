@@ -395,7 +395,7 @@ export const useDockerStore = defineStore('docker', () => {
       pruneActionFailures();
       initialLoadDone = true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error fetching containers:', e);
     } finally {
       loading.value = false;
@@ -439,7 +439,7 @@ export const useDockerStore = defineStore('docker', () => {
     let failure: string | undefined;
     try {
       const result = await useBackend().containers.action(action, id, body);
-      if (!result.ok) failure = result.error || `Could not ${action} container`;
+      if (!result.ok) failure = result.error || `无法 ${action} 容器`;
     } catch (e) {
       failure = e instanceof Error ? e.message : String(e);
     }
@@ -474,7 +474,7 @@ export const useDockerStore = defineStore('docker', () => {
       if (delay !== undefined) body.delay = delay;
       const { ok } = await useBackend().containers.setAutostart(name, body);
       if (!ok) {
-        throw new Error('Failed to update autostart');
+        throw new Error('更新自动启动失败');
       }
       // Update local state immediately
       const container = containers.value.find(c => c.name === name);

@@ -3,16 +3,16 @@
       <!-- Header -->
       <div class="flex justify-between items-center p-4 sm:p-6 border-b border-border shrink-0">
         <div v-if="mode === 'create'" class="flex items-center gap-3 flex-1 mr-4">
-          <h2 class="text-xl font-semibold text-text shrink-0">Create Stack</h2>
+          <h2 class="text-xl font-semibold text-text shrink-0">创建堆栈</h2>
           <input
             v-model="newProjectName"
             type="text"
-            placeholder="Stack name"
+            placeholder="堆栈名称"
             class="styled-input flex-1"
           />
         </div>
-        <h2 v-else class="text-xl font-semibold text-text">{{ readOnly ? 'View' : 'Edit' }} Compose - {{ projectName }}</h2>
-        <button class="flex items-center justify-center w-8 h-8 rounded-full border-none bg-transparent cursor-pointer text-text-secondary hover:text-text hover:bg-border transition" @click="$emit('close')" aria-label="Close">
+        <h2 v-else class="text-xl font-semibold text-text">{{ readOnly ? '查看' : '编辑' }} Compose - {{ projectName }}</h2>
+        <button class="flex items-center justify-center w-8 h-8 rounded-full border-none bg-transparent cursor-pointer text-text-secondary hover:text-text hover:bg-border transition" @click="$emit('close')" aria-label="关闭">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
@@ -30,7 +30,7 @@
 
       <!-- Content -->
       <div class="flex-1 overflow-auto p-4 sm:p-6 flex flex-col min-h-0">
-        <div v-if="loading" class="text-center py-8 text-text-secondary">Loading...</div>
+        <div v-if="loading" class="text-center py-8 text-text-secondary">加载中…</div>
 
         <div v-else-if="activeTab === 'compose'" class="flex flex-col flex-1 min-h-0">
           <div class="flex items-center gap-2 mb-2">
@@ -40,10 +40,10 @@
               @click="toggleHistory('compose')"
               class="nav-btn text-xs shrink-0"
               :class="{ active: showHistory && historyFileType === 'compose' }"
-            >{{ showHistory && historyFileType === 'compose' ? 'Editor' : 'History' }}</button>
+            >{{ showHistory && historyFileType === 'compose' ? '编辑器' : '历史' }}</button>
           </div>
           <div v-if="showHistory && historyFileType === 'compose'" class="flex flex-col flex-1 min-h-0">
-            <div v-if="versions.length === 0" class="text-center py-8 text-text-secondary">No previous versions</div>
+            <div v-if="versions.length === 0" class="text-center py-8 text-text-secondary">没有历史版本</div>
             <div v-else class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto">
               <div
                 v-for="v in versions"
@@ -56,11 +56,11 @@
                 <button
                   @click.stop="confirmRestore(v.id)"
                   class="nav-btn text-xs active"
-                >Restore</button>
+                >恢复</button>
               </div>
             </div>
             <div v-if="previewContent !== null" class="mt-3 flex flex-col min-h-0 flex-1">
-              <div class="text-xs text-text-secondary mb-1">Preview</div>
+              <div class="text-xs text-text-secondary mb-1">预览</div>
               <textarea
                 :value="previewContent"
                 readonly
@@ -81,13 +81,13 @@
 
         <div v-else-if="activeTab === 'env'" class="flex flex-col flex-1 min-h-0">
           <div class="mb-3">
-            <label class="block mb-1 text-sm font-medium text-text">Env File Path</label>
+            <label class="block mb-1 text-sm font-medium text-text">环境文件路径</label>
             <div class="flex gap-2">
               <input
                 v-model="envPath"
                 type="text"
                 :readonly="readOnly"
-                placeholder=".env (default)"
+                placeholder=".env（默认）"
                 class="styled-input flex-1"
                 :class="{ 'opacity-70': readOnly }"
               />
@@ -95,7 +95,7 @@
                 v-if="!readOnly && envPath !== originalEnvPath"
                 @click="saveEnvPath"
                 class="nav-btn active"
-              >Save Path</button>
+              >保存路径</button>
             </div>
           </div>
           <div class="flex items-center gap-2 mb-2">
@@ -105,10 +105,10 @@
               @click="toggleHistory('env')"
               class="nav-btn text-xs shrink-0"
               :class="{ active: showHistory && historyFileType === 'env' }"
-            >{{ showHistory && historyFileType === 'env' ? 'Editor' : 'History' }}</button>
+            >{{ showHistory && historyFileType === 'env' ? '编辑器' : '历史' }}</button>
           </div>
           <div v-if="showHistory && historyFileType === 'env'" class="flex flex-col flex-1 min-h-0">
-            <div v-if="versions.length === 0" class="text-center py-8 text-text-secondary">No previous versions</div>
+            <div v-if="versions.length === 0" class="text-center py-8 text-text-secondary">没有历史版本</div>
             <div v-else class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto">
               <div
                 v-for="v in versions"
@@ -121,11 +121,11 @@
                 <button
                   @click.stop="confirmRestore(v.id)"
                   class="nav-btn text-xs active"
-                >Restore</button>
+                >恢复</button>
               </div>
             </div>
             <div v-if="previewContent !== null" class="mt-3 flex flex-col min-h-0 flex-1">
-              <div class="text-xs text-text-secondary mb-1">Preview</div>
+              <div class="text-xs text-text-secondary mb-1">预览</div>
               <textarea
                 :value="previewContent"
                 readonly
@@ -149,12 +149,12 @@
       <!-- Footer -->
       <div class="flex justify-between items-center gap-2 p-4 sm:p-6 border-t border-border shrink-0">
         <span v-if="saveStatus" class="text-sm" :class="saveStatus === 'saved' ? 'text-green-400' : 'text-error'">
-          {{ saveStatus === 'saved' ? 'Saved' : saveStatus }}
+          {{ saveStatus === 'saved' ? '已保存' : saveStatus }}
         </span>
         <span v-else></span>
         <div class="flex gap-2">
           <button type="button" @click="$emit('close')" class="nav-btn">
-            {{ readOnly ? 'Close' : 'Cancel' }}
+            {{ readOnly ? '关闭' : '取消' }}
           </button>
           <button
             v-if="!readOnly"
@@ -163,7 +163,7 @@
             class="nav-btn active"
             :class="{ 'opacity-50 cursor-not-allowed': saving }"
           >
-            {{ saving ? (mode === 'create' ? 'Creating...' : 'Saving...') : (mode === 'create' ? 'Create' : 'Save') }}
+            {{ saving ? (mode === 'create' ? '正在创建…' : '正在保存…') : (mode === 'create' ? '创建' : '保存') }}
           </button>
         </div>
       </div>
@@ -201,8 +201,8 @@ type TabId = 'compose' | 'env' | 'logs';
 
 const tabs = computed(() => {
   const base: { id: TabId; label: string }[] = [
-    { id: 'compose', label: 'Compose File' },
-    { id: 'env', label: 'Environment' },
+    { id: 'compose', label: 'Compose 文件' },
+    { id: 'env', label: '环境' },
   ];
   if (props.mode !== 'create') base.push({ id: 'logs', label: 'Logs' });
   return base;
@@ -258,8 +258,8 @@ const { inIframe } = parentModal;
 function buildDescriptor() {
   const isCreate = props.mode === 'create';
   const title = isCreate
-    ? 'Create Stack'
-    : `${props.readOnly ? 'View' : 'Edit'} Compose - ${props.projectName}`;
+    ? '创建堆栈'
+    : `${props.readOnly ? '查看' : '编辑'} Compose - ${props.projectName}`;
 
   const fields: Parameters<typeof parentModal.open>[0]['fields'] = [];
 
@@ -267,7 +267,7 @@ function buildDescriptor() {
     fields.push({
       type: 'input',
       id: 'projectName',
-      label: 'Stack Name',
+      label: '堆栈名称',
       value: '',
       placeholder: 'my-stack',
       autofocus: true,
@@ -290,7 +290,7 @@ function buildDescriptor() {
   fields.push({
     type: 'input',
     id: 'envPath',
-    label: 'Env File Path',
+    label: '环境文件路径',
     value: envPath.value,
     placeholder: '.env (default)',
     tab: 'env',
@@ -313,7 +313,7 @@ function buildDescriptor() {
       type: 'checkbox-list',
       id: 'logsControls',
       items: [
-        { id: 'auto', label: useBackend().live ? 'Live updates' : 'Auto-refresh every 3s', checked: logsAutoRefresh.value },
+        { id: 'auto', label: useBackend().live ? '实时更新' : '每 3 秒自动刷新', checked: logsAutoRefresh.value },
       ],
       tab: 'logs',
     });
@@ -345,14 +345,14 @@ function buildActions(): Parameters<typeof parentModal.open>[0]['actions'] {
   const actions: Parameters<typeof parentModal.open>[0]['actions'] = [];
   actions.push({
     id: 'close',
-    label: props.readOnly ? 'Close' : 'Cancel',
+    label: props.readOnly ? '关闭' : '取消',
     variant: 'default',
     disabled: saving.value,
   });
   if (!props.readOnly) {
     actions.push({
       id: 'save',
-      label: saving.value ? (isCreate ? 'Creating...' : 'Saving...') : (isCreate ? 'Create' : 'Save'),
+      label: saving.value ? (isCreate ? '正在创建…' : '正在保存…') : (isCreate ? '创建' : '保存'),
       variant: 'primary',
       disabledWhenEmpty: isCreate ? 'projectName' : undefined,
       disabled: saving.value,
@@ -360,7 +360,7 @@ function buildActions(): Parameters<typeof parentModal.open>[0]['actions'] {
     if (!isCreate) {
       actions.push({
         id: 'save-recompose',
-        label: saving.value ? 'Saving...' : 'Save & Recompose',
+        label: saving.value ? '正在保存…' : '保存并重建',
         variant: 'primary',
         disabled: saving.value,
       });
@@ -480,7 +480,7 @@ async function handleParentSave(
     if (props.mode === 'create') {
       const projectName = typeof values.projectName === 'string' ? values.projectName.trim() : '';
       if (!projectName) {
-        parentModal.result(false, 'Stack name is required');
+        parentModal.result(false, '堆栈名称不能为空');
         return;
       }
       const content = typeof values.composeContent === 'string' ? values.composeContent : '';
@@ -514,7 +514,7 @@ async function handleParentSave(
           });
         }
         if (!validation.success) {
-          parentModal.result(false, validation.errors[0]?.message || 'Invalid compose file');
+          parentModal.result(false, validation.errors[0]?.message || '无效的 Compose 文件');
           return;
         }
         success = await composeStore.saveComposeFile(props.projectName, content);
@@ -532,7 +532,7 @@ async function handleParentSave(
     } catch {
       success = false;
     }
-    parentModal.result(success, success ? undefined : 'Failed to save');
+    parentModal.result(success, success ? undefined : '保存失败');
     if (success) {
       if (actionId === 'save-recompose') {
         emit('recompose', props.projectName);
@@ -571,7 +571,7 @@ async function handleSave() {
   try {
     if (props.mode === 'create') {
       if (!newProjectName.value.trim()) {
-        saveStatus.value = 'Project name is required';
+        saveStatus.value = '项目名称不能为空';
         return;
       }
       const result = await composeStore.createStack(
@@ -579,7 +579,7 @@ async function handleSave() {
         composeContent.value,
         envContent.value,
       );
-      saveStatus.value = result.success ? 'saved' : (result.error || 'Failed to create');
+      saveStatus.value = result.success ? 'saved' : (result.error || '创建失败');
       if (result.success) {
         const { useFolderStore } = await import('@/stores/folders');
         await useFolderStore().fetchFolders();
@@ -592,7 +592,7 @@ async function handleSave() {
       } else {
         success = await composeStore.saveEnvFile(props.projectName, envContent.value);
       }
-      saveStatus.value = success ? 'saved' : 'Failed to save';
+      saveStatus.value = success ? 'saved' : '保存失败';
       if (success) {
         setTimeout(() => emit('close'), 600);
       }
@@ -626,7 +626,7 @@ async function previewVersion(versionId: number) {
 }
 
 async function confirmRestore(versionId: number) {
-  if (!confirm('Restore this version? The current file will be saved as a new version before restoring.')) return;
+  if (!confirm('确定恢复此版本吗？当前文件将在恢复前另存为新版本。')) return;
   const success = await composeStore.restoreFileVersion(props.projectName, versionId);
   if (success) {
     showHistory.value = false;
@@ -635,7 +635,7 @@ async function confirmRestore(versionId: number) {
     await loadForEdit();
     saveStatus.value = 'saved';
   } else {
-    saveStatus.value = 'Failed to restore';
+    saveStatus.value = '恢复失败';
   }
 }
 
@@ -645,12 +645,12 @@ function formatVersionDate(timestamp: number): string {
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffMins < 1) return '刚刚';
+  if (diffMins < 60) return `${diffMins} 分钟前`;
   const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffHours < 24) return `${diffHours} 小时前`;
   const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 7) return `${diffDays} 天前`;
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 

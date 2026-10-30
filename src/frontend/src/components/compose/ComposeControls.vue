@@ -4,7 +4,7 @@
     <button
       v-if="!isFullyRunning"
       :disabled="composeStore.stackActionsDisabled(projectName)"
-      :title="buttonTitle('Start stack')"
+      :title="buttonTitle('启动堆栈')"
       class="p-1 rounded cursor-pointer transition text-text-secondary hover:text-success disabled:opacity-40 disabled:cursor-not-allowed"
       @click="$emit('compose-up', projectName)"
     >
@@ -15,7 +15,7 @@
     <button
       v-if="isRunning"
       :disabled="composeStore.stackActionsDisabled(projectName)"
-      :title="buttonTitle('Recompose (pull + recreate)')"
+      :title="buttonTitle('重建（拉取并重新创建）')"
       class="p-1 rounded cursor-pointer transition text-text-secondary hover:text-info disabled:opacity-40 disabled:cursor-not-allowed"
       @click="$emit('compose-recompose', projectName)"
     >
@@ -26,7 +26,7 @@
     <button
       v-if="isRunning || removing"
       :disabled="composeStore.stackActionsDisabled(projectName)"
-      :title="buttonTitle('Stack Down (delete containers)')"
+      :title="buttonTitle('停止堆栈（删除容器）')"
       class="p-1 rounded cursor-pointer transition text-text-secondary hover:text-error disabled:opacity-40 disabled:cursor-not-allowed"
       @click="$emit('compose-down', projectName)"
     >
@@ -36,7 +36,7 @@
 
     <!-- Schedules -->
     <button
-      title="Schedules"
+      title="计划任务"
       class="p-1 rounded cursor-pointer transition text-text-secondary hover:text-text"
       @click="$emit('schedules', 'stack', projectName)"
     >
@@ -45,7 +45,7 @@
 
     <!-- Edit stack (compose file + logs tab) -->
     <button
-      :title="composeStore.composePluginInstalled ? 'View stack (read-only, compose.manager installed)' : 'Edit stack'"
+      :title="composeStore.composePluginInstalled ? '查看堆栈（只读，已安装 compose.manager）' : '编辑堆栈'"
       class="p-1 rounded cursor-pointer transition text-text-secondary hover:text-info"
       @click="$emit('edit-compose', projectName)"
     >
@@ -54,9 +54,9 @@
     <span
       v-if="failure"
       class="text-[11px] text-error truncate max-w-[240px] cursor-pointer"
-      :title="`${stackActionText(failure)} (click to dismiss)`"
+      :title="`${stackActionText(failure)} (点击关闭)`"
       @click="composeStore.clearStackStatus(projectName)"
-    >{{ failure.kind === 'down' ? 'Stack Down' : 'Stop All' }} failed: {{ stackActionText(failure) }}</span>
+    >{{ failure.kind === 'down' ? '停止堆栈' : '停止全部' }} 失败：{{ stackActionText(failure) }}</span>
   </div>
 </template>
 

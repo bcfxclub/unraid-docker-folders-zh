@@ -57,23 +57,23 @@ export function formatTimestamp(unixSeconds: number, timeZone?: string | null): 
  */
 export function formatTimeUntil(unixSeconds: number): string {
   const diffMs = unixSeconds * 1000 - Date.now();
-  if (diffMs <= 0) return 'due';
+  if (diffMs <= 0) return '已到期';
 
   const seconds = Math.floor(diffMs / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (days > 0) return `in ${days}d ${hours % 24}h`;
-  if (hours > 0) return `in ${hours}h ${minutes % 60}m`;
-  if (minutes > 0) return `in ${minutes}m`;
-  return 'in < 1m';
+  if (days > 0) return `剩余 ${days}天 ${hours % 24}小时`;
+  if (hours > 0) return `剩余 ${hours}小时 ${minutes % 60}分钟`;
+  if (minutes > 0) return `剩余 ${minutes}分钟`;
+  return '剩余不到 1 分钟';
 }
 
 export function formatDuration(startSec: number, endSec: number): string {
   const s = endSec - startSec;
-  if (s < 60) return `${s}s`;
-  return `${Math.floor(s / 60)}m ${s % 60}s`;
+  if (s < 60) return `${s}秒`;
+  return `${Math.floor(s / 60)}分钟 ${s % 60}秒`;
 }
 
 export type ScheduleRunStatus = 'success' | 'error' | 'skipped';
@@ -90,19 +90,19 @@ export function scheduleStatusClass(status: string): string {
 }
 
 export function formatUptime(isoDate: string): string {
-  if (!isoDate) return 'N/A';
+  if (!isoDate) return '无';
   const start = new Date(isoDate).getTime();
   const now = Date.now();
   const diffMs = now - start;
-  if (diffMs < 0) return 'N/A';
+  if (diffMs < 0) return '无';
 
   const seconds = Math.floor(diffMs / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days}d ${hours % 24}h`;
-  if (hours > 0) return `${hours}h ${minutes % 60}m`;
-  if (minutes > 0) return `${minutes}m`;
-  return '< 1m';
+  if (days > 0) return `${days}天 ${hours % 24}小时`;
+  if (hours > 0) return `${hours}小时 ${minutes % 60}分钟`;
+  if (minutes > 0) return `${minutes}分钟`;
+  return '不到 1 分钟';
 }

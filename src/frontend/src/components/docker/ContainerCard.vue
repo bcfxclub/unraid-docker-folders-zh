@@ -20,13 +20,13 @@
           target="_blank"
           rel="noopener noreferrer"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning hover:bg-warning/30"
-          title="View release notes"
+          title="查看发布说明"
           @click.stop
-        >Update</a>
+        >更新</a>
         <span
           v-else-if="hasUpdate"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
-        >Update</span>
+        >更新</span>
         <span
           v-else-if="needsRecreate"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
@@ -35,16 +35,16 @@
         <span
           v-if="checkingUpdates"
           class="shrink-0 inline-flex items-center gap-1 text-[10px] text-text-secondary"
-          title="Checking for image updates"
+          title="正在检查镜像更新"
         >
           <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-          Checking
+          检查中
         </span>
         <span
           v-if="hasPortConflict"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
           :title="portConflictTitle"
-        >Port Conflict</span>
+        >端口冲突</span>
         <!-- The pill lives on the inner span, not the button: the Unraid reset
              zeroes padding/background/radius on any button without .nav-btn
              (DESIGN.md §11), and a .nav-btn does not look like a badge. -->
@@ -79,7 +79,7 @@
   
       <!-- Compact ports (collapsed) -->
       <div v-if="compactPorts && !expanded" class="px-4 sm:px-6 pb-0.5">
-        <span class="text-[11px] text-text font-mono truncate block">Ports: {{ compactPorts }}</span>
+        <span class="text-[11px] text-text font-mono truncate block">端口：{{ compactPorts }}</span>
       </div>
   
       <!-- Compact stats loading state -->
@@ -94,7 +94,7 @@
         <StatsBar label="MEM" :percent="containerStats.memoryPercent" />
         <div v-if="containerStats.restartCount > 0" class="flex items-center gap-2 text-xs">
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-error/15 text-error rounded text-[11px] font-mono font-medium">
-            {{ containerStats.restartCount }} restart{{ containerStats.restartCount !== 1 ? 's' : '' }}
+            {{ containerStats.restartCount }} 次重启
           </span>
         </div>
       </div>
@@ -122,21 +122,21 @@
         </div>
       </template>
       <template v-else>
-      <button v-if="isPaused" @click="emit('resume', container.id)" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Resume"><IconPlay :size="20" /></button>
-      <button v-else-if="isRunning" @click="confirmAction = 'stop'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-error hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Stop"><IconStop :size="20" /></button>
-      <button v-else @click="emit('start', container.id)" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Start"><IconPlay :size="20" /></button>
-      <button v-if="isRunning" @click="confirmAction = 'restart'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Restart"><IconRestart :size="20" /></button>
-      <button v-if="isStopped" @click="confirmAction = 'remove'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-muted hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Remove"><IconTrash :size="20" /></button>
-      <button v-if="hasUpdate" @click="emit('pull', pullPayload())" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-warning hover:bg-warning hover:text-white" title="Pull Update"><IconDownload :size="20" /></button>
+      <button v-if="isPaused" @click="emit('resume', container.id)" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="恢复"><IconPlay :size="20" /></button>
+      <button v-else-if="isRunning" @click="confirmAction = 'stop'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-error hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="停止"><IconStop :size="20" /></button>
+      <button v-else @click="emit('start', container.id)" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="启动"><IconPlay :size="20" /></button>
+      <button v-if="isRunning" @click="confirmAction = 'restart'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="重启"><IconRestart :size="20" /></button>
+      <button v-if="isStopped" @click="confirmAction = 'remove'" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-muted hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="删除"><IconTrash :size="20" /></button>
+      <button v-if="hasUpdate" @click="emit('pull', pullPayload())" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-warning hover:bg-warning hover:text-white" title="拉取更新"><IconDownload :size="20" /></button>
       <!-- Adopt: only for a container Unraid does not manage yet -->
-      <button v-if="canAdopt" @click.stop="openAdopt" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text" title="Adopt into Unraid — let Unraid manage this container"><IconAdopt :size="20" /></button>
+      <button v-if="canAdopt" @click.stop="openAdopt" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text" title="接管到 Unraid —— 由 Unraid 管理此容器"><IconAdopt :size="20" /></button>
       </template>
       <!-- Autostart toggle -->
-      <button v-if="isManaged" @click.stop="handleToggleAutostart" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? 'Autostart: ON (click to disable)' : 'Autostart: OFF (click to enable)'"><IconAutostart :size="20" /></button>
+      <button v-if="isManaged" @click.stop="handleToggleAutostart" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? '自动启动：开（点击停用）' : '自动启动：关（点击启用）'"><IconAutostart :size="20" /></button>
       <span v-else class="flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`Autostart: ${manageHint}`"><IconAutostart :size="20" /></span>
       <!-- WebUI (always shown, disabled when no webui) -->
-      <a v-if="resolvedWebui && isRunning" :href="resolvedWebui" target="_blank" rel="noopener" class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary hover:text-primary transition" title="Open WebUI" @click.stop><IconGlobe :size="20" /></a>
-      <span v-else class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary opacity-30" title="No WebUI configured. Set the WebUI field in the container's Unraid template to enable this."><IconGlobe :size="20" /></span>
+      <a v-if="resolvedWebui && isRunning" :href="resolvedWebui" target="_blank" rel="noopener" class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary hover:text-primary transition" title="打开 WebUI" @click.stop><IconGlobe :size="20" /></a>
+      <span v-else class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary opacity-30" title="未配置 WebUI。在容器的 Unraid 模板中设置 WebUI 字段以启用此项。"><IconGlobe :size="20" /></span>
       <!-- Kebab menu -->
       <KebabMenu
         ref="kebabMenuRef"
@@ -171,13 +171,13 @@
             target="_blank"
             rel="noopener noreferrer"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning hover:bg-warning/30"
-            title="View release notes"
+            title="查看发布说明"
             @click.stop
-          >Update</a>
+          >更新</a>
           <span
             v-else-if="hasUpdate"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
-          >Update</span>
+          >更新</span>
           <span
             v-else-if="needsRecreate"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
@@ -186,16 +186,16 @@
           <span
             v-if="checkingUpdates"
             class="shrink-0 inline-flex items-center gap-1 text-[10px] text-text-secondary"
-            title="Checking for image updates"
+            title="正在检查镜像更新"
           >
             <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-            Checking
+            检查中
           </span>
           <span
             v-if="hasPortConflict"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
             :title="portConflictTitle"
-          >Port Conflict</span>
+          >端口冲突</span>
           <!-- See the grid branch: the pill has to sit on a child of the
                button, because the reset strips it from the button itself. -->
           <button
@@ -237,8 +237,8 @@
           <StatsBar label="CPU" :percent="containerStats.cpuPercent" size="inline" />
           <StatsBar label="MEM" :percent="containerStats.memoryPercent" size="inline" />
         </div>
-        <span v-if="containerStats.restartCount > 0" class="inline-flex items-center px-1.5 py-0.5 bg-error/15 text-error rounded text-[11px] font-mono font-medium shrink-0" :title="`${containerStats.restartCount} restart(s)`">
-          {{ containerStats.restartCount }} rst
+        <span v-if="containerStats.restartCount > 0" class="inline-flex items-center px-1.5 py-0.5 bg-error/15 text-error rounded text-[11px] font-mono font-medium shrink-0" :title="`${containerStats.restartCount} 次重启`">
+          {{ containerStats.restartCount }} 次重启
         </span>
       </div>
 
@@ -254,17 +254,17 @@
         </template>
         <template v-else>
         <!-- WebUI (always shown, disabled when no webui) -->
-        <a v-if="resolvedWebui && isRunning" :href="resolvedWebui" target="_blank" rel="noopener" class="hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary hover:text-primary transition" title="Open WebUI" @click.stop><IconGlobe :size="18" /></a>
-        <span v-else class="hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" title="No WebUI configured. Set the WebUI field in the container's Unraid template to enable this."><IconGlobe :size="18" /></span>
-        <button v-if="isPaused" @click="emit('resume', container.id)" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Resume"><IconPlay :size="18" /></button>
-        <button v-else-if="isRunning" @click="confirmAction = 'stop'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-error hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Stop"><IconStop :size="18" /></button>
-        <button v-else @click="emit('start', container.id)" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Start"><IconPlay :size="18" /></button>
-        <button v-if="isRunning" @click="confirmAction = 'restart'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Restart"><IconRestart :size="18" /></button>
-        <button v-if="isStopped" @click="confirmAction = 'remove'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-muted hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="Remove"><IconTrash :size="18" /></button>
-        <button v-if="hasUpdate" @click="emit('pull', pullPayload())" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-warning hover:bg-warning hover:text-white" title="Pull Update"><IconDownload :size="18" /></button>
+        <a v-if="resolvedWebui && isRunning" :href="resolvedWebui" target="_blank" rel="noopener" class="hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary hover:text-primary transition" title="打开 WebUI" @click.stop><IconGlobe :size="18" /></a>
+        <span v-else class="hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" title="未配置 WebUI。在容器的 Unraid 模板中设置 WebUI 字段以启用此项。"><IconGlobe :size="18" /></span>
+        <button v-if="isPaused" @click="emit('resume', container.id)" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="恢复"><IconPlay :size="18" /></button>
+        <button v-else-if="isRunning" @click="confirmAction = 'stop'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-error hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="停止"><IconStop :size="18" /></button>
+        <button v-else @click="emit('start', container.id)" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-success hover:bg-success hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="启动"><IconPlay :size="18" /></button>
+        <button v-if="isRunning" @click="confirmAction = 'restart'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="重启"><IconRestart :size="18" /></button>
+        <button v-if="isStopped" @click="confirmAction = 'remove'" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-muted hover:bg-error hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isActionInProgress" title="删除"><IconTrash :size="18" /></button>
+        <button v-if="hasUpdate" @click="emit('pull', pullPayload())" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-warning hover:bg-warning hover:text-white" title="拉取更新"><IconDownload :size="18" /></button>
         <!-- Adopt: only for a container Unraid does not manage yet -->
-        <button v-if="canAdopt" @click.stop="openAdopt" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text" title="Adopt into Unraid — let Unraid manage this container"><IconAdopt :size="18" /></button>
-        <button v-if="isManaged" @click.stop="handleToggleAutostart" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? 'Autostart: ON (click to disable)' : 'Autostart: OFF (click to enable)'"><IconAutostart :size="18" /></button>
+        <button v-if="canAdopt" @click.stop="openAdopt" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text" title="接管到 Unraid —— 由 Unraid 管理此容器"><IconAdopt :size="18" /></button>
+        <button v-if="isManaged" @click.stop="handleToggleAutostart" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? '自动启动：开（点击停用）' : '自动启动：关（点击启用）'"><IconAutostart :size="18" /></button>
         <span v-else class="action-btn hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`Autostart: ${manageHint}`"><IconAutostart :size="18" /></span>
         </template>
         <!-- Kebab menu -->
@@ -297,26 +297,26 @@
       :message="confirmModalConfig.message"
       :confirm-label="confirmModalConfig.label"
       :variant="confirmModalConfig.variant"
-      :checkbox-label="confirmAction === 'remove' ? `Also delete the image (${container.image})` : undefined"
+      :checkbox-label="confirmAction === 'remove' ? `同时删除镜像（${container.image}）` : undefined"
       @confirm="handleConfirm"
       @cancel="confirmAction = null"
     />
     <InputModal
       :is-open="showDelayModal"
       title="Autostart Delay"
-      :description="`Set delay before ${container.name} starts automatically (in seconds).`"
+      :description="`设置 ${container.name} 自动启动前的延迟（秒）。`"
       :initial-value="String(container.autostartDelay)"
       placeholder="0"
-      suffix="Seconds to wait before starting this container on boot."
+      suffix="启动时启动该容器前等待的秒数。"
       input-type="number"
-      confirm-label="Save"
+      confirm-label="保存"
       @confirm="handleDelayConfirm"
       @cancel="showDelayModal = false"
     />
     <SelectModal
       :is-open="showFolderPicker"
-      :title="`${folderVerb} to Folder`"
-      :description="`Choose a folder for ${container.name}.`"
+      :title="`${folderVerb} 到文件夹`"
+      :description="`为 ${container.name} 选择文件夹。`"
       :options="folderTargets"
       :confirm-label="folderVerb"
       @confirm="handleFolderPicked"
@@ -405,11 +405,11 @@ const isActionInProgress = computed(() => !!props.actionInProgress);
 
 const actionStatusText = computed(() => {
   switch (props.actionInProgress) {
-    case 'start': return 'Starting...';
-    case 'resume': return 'Resuming...';
-    case 'stop': return 'Stopping...';
-    case 'restart': return 'Restarting...';
-    case 'remove': return 'Removing...';
+    case 'start': return '启动中...';
+    case 'resume': return '恢复中...';
+    case 'stop': return '停止中...';
+    case 'restart': return '重启中...';
+    case 'remove': return '删除中...';
     default: return '';
   }
 });
@@ -427,7 +427,7 @@ const showDelayModal = ref(false);
 const folderStore = useFolderStore();
 const showFolderPicker = ref(false);
 const currentFolder = computed(() => folderStore.getFolderForContainer(props.container.name));
-const folderVerb = computed(() => (currentFolder.value ? 'Move' : 'Add'));
+const folderVerb = computed(() => (currentFolder.value ? '移动' : '添加'));
 const folderTargets = computed(() => {
   const targets = folderStore.sortedFolders
     .filter((f) => f.id !== currentFolder.value?.id)

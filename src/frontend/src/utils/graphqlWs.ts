@@ -175,7 +175,7 @@ export class GraphqlWsClient {
           this.subscriptions.delete(message.id);
           subscription?.onComplete?.();
         }
-        if (this.subscriptions.size === 0) this.endSocket('server ended the subscription');
+        if (this.subscriptions.size === 0) this.endSocket('服务器已结束订阅');
         break;
 
       default:
@@ -220,5 +220,5 @@ function firstErrorMessage(payload: unknown): string {
     const first = payload[0] as { message?: string } | undefined;
     if (typeof first?.message === 'string') return first.message;
   }
-  return 'Subscription failed';
+  return '订阅失败';
 }

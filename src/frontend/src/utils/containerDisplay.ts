@@ -95,28 +95,28 @@ export function containerStatus(container: StatusInput, distinguishHealthy: bool
   const ok = (halo: string, tooltip: string): ContainerStatus => ({ halo, tooltip, crashed: false });
   const crash = crashKind(container);
   if (crash) {
-    const verb = state === 'restarting' ? 'Crashing, restarting' : state === 'dead' ? 'Dead' : 'Crashed';
+    const verb = state === 'restarting' ? '正在崩溃，重启中' : state === 'dead' ? '已失效' : '已崩溃';
     const detail = crash.ghost
-      ? ', though Docker still lists it as running'
+      ? '，尽管 Docker 仍将其列为运行中'
       : crash.oom
-        ? ' (out of memory)'
+        ? '（内存不足）'
         : crash.code === null
           ? ''
-          : ` (exit code ${crash.code})`;
+          : `（退出码 ${crash.code}）`;
     return { halo: 'status-halo-error', tooltip: `${verb}${detail}`, crashed: true };
   }
   if (state === 'running') {
     const portProblem = containerPortProblem(container);
-    if (portProblem) return ok('status-halo-warning', `Running, but ${portProblem}`);
-    if (!distinguishHealthy) return ok('status-halo-success', 'Running');
+    if (portProblem) return ok('status-halo-warning', `运行中，但 ${portProblem}`);
+    if (!distinguishHealthy) return ok('status-halo-success', '运行中');
     return container.status?.toLowerCase().includes('(healthy)')
-      ? ok('status-halo-success', 'Running (healthy)')
-      : ok('status-halo-info', 'Running (no health check)');
+      ? ok('status-halo-success', '运行中（健康）')
+      : ok('status-halo-info', '运行中（无健康检查）');
   }
-  if (state === 'paused') return ok('status-halo-warning', 'Paused');
-  if (state === 'exited') return ok('status-halo-error', 'Exited');
-  if (state === 'stopped') return ok('status-halo-error', 'Stopped');
-  if (state === 'created') return ok('status-halo-muted', 'Created');
+  if (state === 'paused') return ok('status-halo-warning', '已暂停');
+  if (state === 'exited') return ok('status-halo-error', '已退出');
+  if (state === 'stopped') return ok('status-halo-error', '已停止');
+  if (state === 'created') return ok('status-halo-muted', '已创建');
   return ok('status-halo-muted', state.charAt(0).toUpperCase() + state.slice(1));
 }
 
@@ -127,9 +127,9 @@ export function containerStatus(container: StatusInput, distinguishHealthy: bool
 export function containerPortProblem(container: Pick<Container, 'state' | 'closedPorts' | 'unpublishedPorts'>): string | null {
   if (container.state !== 'running') return null;
   const parts: string[] = [];
-  const list = (noun: string, ports: number[]) => `${ports.length === 1 ? noun : `${noun}s`} ${ports.join(', ')}`;
-  if (container.closedPorts?.length) parts.push(`nothing listens on ${list('port', container.closedPorts)}`);
-  if (container.unpublishedPorts?.length) parts.push(`${list('host port', container.unpublishedPorts)} not published`);
+  const list = (noun: string, ports: number[]) => `${noun} ${ports.join(', ')}`;
+  if (container.closedPorts?.length) parts.push(`没有任何进程监听 ${list('端口', container.closedPorts)}`);
+  if (container.unpublishedPorts?.length) parts.push(`${list('主机端口', container.unpublishedPorts)} 未发布`);
   return parts.length ? parts.join('; ') : null;
 }
 

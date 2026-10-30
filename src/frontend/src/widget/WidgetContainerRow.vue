@@ -19,7 +19,7 @@
           v-if="status.crashed"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
           :title="status.tooltip"
-        >Crashed</span>
+        >已崩溃</span>
         <template v-if="showTags">
           <a
             v-if="hasUpdate && releaseNotesUrl"
@@ -27,19 +27,19 @@
             target="_blank"
             rel="noopener noreferrer"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning hover:bg-warning/30"
-            title="View release notes"
-          >Update</a>
-          <span v-else-if="hasUpdate" class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning">Update</span>
+            title="查看发布说明"
+          >更新</a>
+          <span v-else-if="hasUpdate" class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning">更新</span>
           <span
             v-if="restartCount >= RESTART_TAG_MIN"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold font-mono rounded bg-error/15 text-error"
             :title="`${restartCount} restarts`"
-          >{{ restartCount }} rst</span>
+          >{{ restartCount }} 次重启</span>
           <span
             v-if="failedSchedules.length"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
             :title="failedTitle"
-          >Failed</span>
+          >失败</span>
         </template>
       </span>
       <!-- A failed start, resume or stop shows whatever the tag setting, with
@@ -64,7 +64,7 @@
         target="_blank"
         rel="noopener"
         class="icon-btn shrink-0 text-text-secondary hover:text-text"
-        :title="`Open WebUI for ${container.name}`"
+        :title="`打开 ${container.name} 的 WebUI`"
       ><IconGlobe :size="14" /></a>
       <span
         v-else
@@ -78,7 +78,7 @@
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      aria-label="Working"
+      aria-label="处理中"
     >
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -88,7 +88,7 @@
       :fit-viewport="false"
       :icon-size="14"
       button-class="icon-btn text-text-secondary hover:text-text"
-      :button-title="`Actions for ${container.name}`"
+      :button-title="`${container.name} 的操作`"
       @select="onSelect"
       @open-change="(open, bottom) => emit('menu-open-change', open, bottom)"
     />
@@ -148,8 +148,8 @@ const webuiUrl = computed(() => (props.showWebui && isRunning.value ? containerW
 // WebUI configured" is wrong for a configured container that is stopped.
 const webuiDisabledTitle = computed(() =>
   containerWebuiUrl(props.container)
-    ? `${props.container.name} is not running, so its WebUI is unavailable.`
-    : "No WebUI configured. Set the WebUI field in the container's Unraid template to enable this.",
+    ? `${props.container.name} 未运行，因此其 WebUI 不可用。`
+    : "未配置 WebUI。请在容器的 Unraid 模板中设置 WebUI 字段以启用此功能。",
 );
 
 // Stats are registered by WidgetApp for every running container, not per row:
@@ -159,8 +159,8 @@ const stats = computed(() => (props.showStats ? statsStore.getStats(props.contai
 const restartCount = computed(() => stats.value?.restartCount ?? 0);
 const statsTitle = computed(() =>
   stats.value
-    ? `CPU ${formatPercent(stats.value.cpuPercent)} · Memory ${formatBytes(stats.value.memoryUsage)} / ${formatBytes(stats.value.memoryLimit)}`
-    : 'Loading stats',
+    ? `CPU ${formatPercent(stats.value.cpuPercent)} · 内存 ${formatBytes(stats.value.memoryUsage)} / ${formatBytes(stats.value.memoryLimit)}`
+    : '加载统计中',
 );
 const hasUpdate = computed(() => settingsStore.enableUpdateChecks && updatesStore.hasUpdate(props.container.image));
 const releaseNotesUrl = computed(() => releaseIndexUrl(updatesStore.updates[props.container.image]));
@@ -168,23 +168,23 @@ const hasTags = computed(
   () => hasUpdate.value || restartCount.value >= RESTART_TAG_MIN || props.failedSchedules.length > 0,
 );
 const failedTitle = computed(() =>
-  props.failedSchedules.map((s) => `${s.name}: ${s.last_run_message || 'failed'}`).join('\n'),
+  props.failedSchedules.map((s) => `${s.name}: ${s.last_run_message || '失败'}`).join('\n'),
 );
 
 const menuItems = computed<KebabMenuItem[]>(() => [
-  { label: 'Start', icon: 'M6 4l14 8-14 8z', action: 'start', class: 'text-success', show: !isRunning.value && !isPaused.value, disabled: busy.value },
-  { label: 'Resume', icon: 'M6 4l14 8-14 8z', action: 'resume', class: 'text-success', show: isPaused.value, disabled: busy.value },
-  { label: 'Stop', icon: 'M6 6h12v12H6z', action: 'stop', class: 'text-error', show: isRunning.value, disabled: busy.value },
+  { label: '启动', icon: 'M6 4l14 8-14 8z', action: 'start', class: 'text-success', show: !isRunning.value && !isPaused.value, disabled: busy.value },
+  { label: '恢复', icon: 'M6 4l14 8-14 8z', action: 'resume', class: 'text-success', show: isPaused.value, disabled: busy.value },
+  { label: '停止', icon: 'M6 6h12v12H6z', action: 'stop', class: 'text-error', show: isRunning.value, disabled: busy.value },
   // `href` is empty for an unmanaged container, so KebabMenu falls through to
   // its button branch, which is the only one that honours disabled/title.
   {
-    label: 'Edit',
+    label: '编辑',
     icon: 'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7|M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z',
     href: editUrl.value || '',
     disabled: !editUrl.value,
-    title: editUrl.value ? undefined : 'Only available for containers that Unraid manages.',
+    title: editUrl.value ? undefined : '仅对 Unraid 管理的容器可用。',
   },
-  { label: 'Logs', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z|M14 2v6h6|M16 13H8|M16 17H8|M10 9H8', action: 'logs', show: !isCompose.value },
+  { label: '日志', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z|M14 2v6h6|M16 13H8|M16 17H8|M10 9H8', action: 'logs', show: !isCompose.value },
 ]);
 
 async function run(action: (id: string) => Promise<boolean>) {

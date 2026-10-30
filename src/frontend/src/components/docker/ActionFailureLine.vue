@@ -5,7 +5,7 @@
     <button
       type="button"
       class="block w-full min-w-0 text-left truncate cursor-pointer"
-      :title="`${failure.error} (click to dismiss)`"
+      :title="`${failure.error}（点击关闭）`"
       @click.stop="dockerStore.dismissActionFailure(container.name)"
     >{{ failure.error }}</button>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <label :for="`${uid}-cron-preset`" class="text-sm font-medium text-text">Schedule</label>
+    <label :for="`${uid}-cron-preset`" class="text-sm font-medium text-text">计划任务</label>
     <select
       :id="`${uid}-cron-preset`"
       :value="preset"
@@ -11,7 +11,7 @@
     </select>
 
     <div v-if="preset === 'daily_custom'" class="flex items-center gap-2">
-      <label :for="`${uid}-cron-daily-time`" class="text-xs text-text-secondary">Time:</label>
+      <label :for="`${uid}-cron-daily-time`" class="text-xs text-text-secondary">时间：</label>
       <input
         :id="`${uid}-cron-daily-time`"
         type="time"
@@ -22,7 +22,7 @@
     </div>
 
     <div v-if="preset === 'weekly_custom'" class="flex items-center gap-2 flex-wrap">
-      <label :for="`${uid}-cron-weekly-day`" class="text-xs text-text-secondary">Day:</label>
+      <label :for="`${uid}-cron-weekly-day`" class="text-xs text-text-secondary">天：</label>
       <select
         :id="`${uid}-cron-weekly-day`"
         :value="customDay"
@@ -31,7 +31,7 @@
       >
         <option v-for="(name, idx) in dayNames" :key="idx" :value="idx">{{ name }}</option>
       </select>
-      <label :for="`${uid}-cron-weekly-time`" class="text-xs text-text-secondary">Time:</label>
+      <label :for="`${uid}-cron-weekly-time`" class="text-xs text-text-secondary">时间：</label>
       <input
         :id="`${uid}-cron-weekly-time`"
         type="time"
@@ -48,10 +48,10 @@
         class="form-input mono"
         @input="onCustomInput(($event.target as HTMLInputElement).value)"
       />
-      <span class="text-xs text-text-secondary">Format: minute hour day-of-month month day-of-week</span>
+      <span class="text-xs text-text-secondary">格式：分 时 日 月 周</span>
     </div>
 
-    <p class="text-xs text-text-secondary">{{ description }} ({{ settingsStore.serverTimezone ?? 'server timezone' }})</p>
+    <p class="text-xs text-text-secondary">{{ description }} ({{ settingsStore.serverTimezone ?? '服务器时区' }})</p>
   </div>
 </template>
 

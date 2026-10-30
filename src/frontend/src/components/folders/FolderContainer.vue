@@ -42,15 +42,15 @@
           >
             <span class="w-2 h-2 rounded-full bg-text-secondary shrink-0"></span>
             <span class="text-sm text-text truncate">{{ name }}</span>
-            <span class="ml-auto text-[10px] uppercase tracking-wide text-text-secondary">stopped</span>
+            <span class="ml-auto text-[10px] uppercase tracking-wide text-text-secondary">已停止</span>
           </div>
         </div>
         <div
           v-else-if="folderContainers.length === 0 && !folder.compose_project"
           class="text-center py-6 text-text-secondary border-2 border-dashed border-border rounded mb-2"
         >
-          <p>No containers in this folder</p>
-          <p class="text-sm italic">Drag containers here to organize them</p>
+          <p>此文件夹中暂无容器</p>
+          <p class="text-sm italic">将容器拖拽到此处以进行整理</p>
         </div>
       </div>
     </div>

@@ -2,17 +2,17 @@
   <div class="space-y-3 text-xs">
     <!-- Row 1: resource usage, full width -->
     <div class="space-y-1.5 min-w-0">
-      <p class="text-text-secondary text-xs">Resource Usage</p>
+      <p class="text-text-secondary text-xs">资源使用情况</p>
       <template v-if="isRunning && containerStats">
         <StatsBar label="CPU" :percent="containerStats.cpuPercent" size="wide" />
-        <StatsBar label="Memory" :percent="containerStats.memoryPercent" size="wide" :formatted-value="`${formatBytes(containerStats.memoryUsage)} / ${formatBytes(containerStats.memoryLimit)} (${formatPercent(containerStats.memoryPercent)})`" />
+        <StatsBar label="内存" :percent="containerStats.memoryPercent" size="wide" :formatted-value="`${formatBytes(containerStats.memoryUsage)} / ${formatBytes(containerStats.memoryLimit)} (${formatPercent(containerStats.memoryPercent)})`" />
       </template>
       <template v-else-if="isRunning && showStats">
         <StatsBar label="CPU" :percent="null" size="wide" />
-        <StatsBar label="Memory" :percent="null" size="wide" />
+        <StatsBar label="内存" :percent="null" size="wide" />
       </template>
-      <p v-else-if="isRunning" class="text-text-secondary italic">Stats disabled</p>
-      <p v-else class="text-text-secondary italic">Container not running</p>
+      <p v-else-if="isRunning" class="text-text-secondary italic">统计已停用</p>
+      <p v-else class="text-text-secondary italic">容器未运行</p>
     </div>
 
     <!-- Row 2: what the container is (left) | how it's behaving (right) -->
@@ -26,25 +26,25 @@
         :class="{ 'md:col-span-2': !hasStatsColumn }"
       >
         <template v-if="container.image">
-          <span class="text-text-secondary shrink-0">Image</span>
+          <span class="text-text-secondary shrink-0">镜像</span>
           <span class="text-text font-mono truncate">
             <ImageLink :image="container.image" :href="imageLink" />
           </span>
         </template>
         <template v-if="networkInfo">
-          <span class="text-text-secondary shrink-0">Network</span>
+          <span class="text-text-secondary shrink-0">网络</span>
           <span class="text-text font-mono truncate">{{ networkInfo.name }} {{ networkInfo.ip }}</span>
         </template>
         <template v-if="displayPorts.length">
-          <span class="text-text-secondary shrink-0">Ports</span>
+          <span class="text-text-secondary shrink-0">端口</span>
           <div class="font-mono space-y-0.5 min-w-0">
             <p v-for="(port, i) in displayPorts" :key="i" class="truncate" :class="port.conflictWith ? 'text-error' : 'text-text'">
-              {{ port.text }}<span v-if="port.conflictWith"> — conflicts with {{ port.conflictWith.join(', ') }}</span>
+              {{ port.text }}<span v-if="port.conflictWith"> — 与冲突 {{ port.conflictWith.join(', ') }}</span>
             </p>
           </div>
         </template>
         <template v-if="displayMounts.length">
-          <span class="text-text-secondary shrink-0">Volumes</span>
+          <span class="text-text-secondary shrink-0">挂载卷</span>
           <div class="text-text font-mono space-y-0.5 min-w-0 overflow-x-auto">
             <p v-for="mount in displayMounts" :key="mount.destination" class="sm:whitespace-nowrap" :title="`${mount.source} -> ${mount.destination}`">
               <a :href="`/Shares/Browse?dir=${encodeURIComponent(mount.source)}`" class="inline-flex items-center gap-1 hover:underline" @click.stop><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 inline"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>{{ mount.sourceShort }}</a> -&gt; {{ mount.destination }}
@@ -52,44 +52,44 @@
           </div>
         </template>
         <template v-if="healthStatus">
-          <span class="text-text-secondary shrink-0">Health</span>
+          <span class="text-text-secondary shrink-0">健康状态</span>
           <span class="font-mono" :class="healthClass">{{ healthStatus }}</span>
         </template>
         <template v-if="container.command">
-          <span class="text-text-secondary shrink-0">Command</span>
+          <span class="text-text-secondary shrink-0">命令</span>
           <span class="text-text font-mono truncate" :title="container.command">{{ container.command }}</span>
         </template>
         <template v-if="displayLabels.length">
-          <span class="text-text-secondary shrink-0">Labels</span>
+          <span class="text-text-secondary shrink-0">标签</span>
           <div class="text-text font-mono space-y-0.5 min-w-0 overflow-x-auto">
             <p v-for="label in displayLabels" :key="label.key" class="text-[11px] whitespace-nowrap" :title="`${label.key}=${label.value}`">
               <span class="text-text">{{ label.key }}</span>=<span class="text-text-secondary">{{ label.value }}</span>
             </p>
           </div>
         </template>
-        <p v-if="!hasMetadata" class="col-span-2 text-text-secondary italic">No additional details available</p>
+        <p v-if="!hasMetadata" class="col-span-2 text-text-secondary italic">无可用的额外详情</p>
       </div>
       <!-- Right: I/O, PIDs, uptime, sizes. A stopped container keeps only what
            still holds after it stops: I/O, PIDs and uptime describe a process
            that is gone, and uptime would count from the last start. -->
       <div v-if="containerStats" class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 content-start min-w-0">
         <template v-if="isRunning">
-          <span class="text-text-secondary">Block I/O</span>
-          <span class="text-text font-mono truncate">R: {{ formatBytes(containerStats.blockRead) }} / W: {{ formatBytes(containerStats.blockWrite) }}</span>
-          <span class="text-text-secondary">Net I/O</span>
-          <span class="text-text font-mono truncate">RX: {{ formatBytes(containerStats.netRx) }} / TX: {{ formatBytes(containerStats.netTx) }}</span>
-          <span class="text-text-secondary">PIDs</span>
+          <span class="text-text-secondary">块 I/O</span>
+          <span class="text-text font-mono truncate">读: {{ formatBytes(containerStats.blockRead) }} / 写: {{ formatBytes(containerStats.blockWrite) }}</span>
+          <span class="text-text-secondary">网络 I/O</span>
+          <span class="text-text font-mono truncate">接收: {{ formatBytes(containerStats.netRx) }} / 发送: {{ formatBytes(containerStats.netTx) }}</span>
+          <span class="text-text-secondary">进程数</span>
           <span class="text-text font-mono">{{ containerStats.pids }}</span>
         </template>
-        <span class="text-text-secondary">Restarts</span>
+        <span class="text-text-secondary">重启次数</span>
         <span class="font-mono" :class="restartClass">{{ containerStats.restartCount }}</span>
         <template v-if="isRunning">
-          <span class="text-text-secondary">Uptime</span>
+          <span class="text-text-secondary">运行时长</span>
           <span class="text-text font-mono">{{ formatUptime(containerStats.startedAt) }}</span>
         </template>
-        <span class="text-text-secondary">Image Size</span>
+        <span class="text-text-secondary">镜像大小</span>
         <span class="text-text font-mono">{{ formatBytes(containerStats.imageSize) }}</span>
-        <span class="text-text-secondary">Log Size</span>
+        <span class="text-text-secondary">日志大小</span>
         <span class="font-mono" :class="logSizeClass">{{ formatBytes(containerStats.logSize) }}</span>
       </div>
     </div>
@@ -100,17 +100,17 @@
          stays in the ScheduleList modal behind the kebab. -->
     <div v-if="containerSchedules.length" class="pt-2 border-t border-border">
       <div class="flex items-center justify-between gap-2 mb-1">
-        <p class="text-text-secondary text-xs">Schedules</p>
+        <p class="text-text-secondary text-xs">计划任务</p>
         <!-- Manage gates every mutation behind an explicit mode, so a stray
              click on a card can never change what runs on a container. -->
         <div class="flex items-center gap-2 shrink-0">
           <template v-if="manageMode">
-            <button class="nav-btn" :disabled="applying" :class="{ 'opacity-50 cursor-not-allowed': applying }" @click.stop="cancelManage">Cancel</button>
+            <button class="nav-btn" :disabled="applying" :class="{ 'opacity-50 cursor-not-allowed': applying }" @click.stop="cancelManage">取消</button>
             <button class="nav-btn active" :disabled="applying" :class="{ 'opacity-50 cursor-not-allowed': applying }" @click.stop="onDone">
-              {{ applying ? 'Saving' : 'Done' }}
+              {{ applying ? '保存中' : '完成' }}
             </button>
           </template>
-          <button v-else class="nav-btn" @click.stop="startManage">Manage</button>
+          <button v-else class="nav-btn" @click.stop="startManage">管理</button>
         </div>
       </div>
 
@@ -127,8 +127,8 @@
             :disabled="!manageMode || stagedDeletes.has(schedule.id)"
             class="shrink-0"
             :class="manageMode && !stagedDeletes.has(schedule.id) ? 'cursor-pointer' : 'cursor-default'"
-            :aria-label="displayEnabled(schedule) ? `Disable ${schedule.name}` : `Enable ${schedule.name}`"
-            :title="manageMode ? (displayEnabled(schedule) ? 'Disable' : 'Enable') : 'Click Manage to change'"
+            :aria-label="displayEnabled(schedule) ? `停用 ${schedule.name}` : `启用 ${schedule.name}`"
+            :title="manageMode ? (displayEnabled(schedule) ? '停用' : '启用') : '点击“管理”以修改'"
             @click.stop
             @change="toggleStaged(schedule)"
           />
@@ -136,7 +136,7 @@
           <span class="truncate" :class="displayEnabled(schedule) ? 'text-text' : 'text-muted'">{{ schedule.name }}</span>
           <!-- next_run_at stays populated on a disabled schedule, so never show
                a next run for one — it would read as still-armed. -->
-          <span v-if="!displayEnabled(schedule)" class="text-muted shrink-0">disabled</span>
+          <span v-if="!displayEnabled(schedule)" class="text-muted shrink-0">已停用</span>
           <span v-else-if="schedule.next_run_at" class="text-text-secondary shrink-0">{{ formatTimeUntil(schedule.next_run_at) }}</span>
           <span v-if="schedule.last_run_status" class="text-text-secondary shrink-0">
             last <span :class="scheduleStatusClass(schedule.last_run_status)">{{ schedule.last_run_status }}</span>
@@ -146,7 +146,7 @@
             <button
               class="icon-btn text-text-secondary hover:text-text"
               :aria-label="`Run history for ${schedule.name}`"
-              title="Run history"
+              title="运行历史"
               @click.stop="historyId = schedule.id"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
@@ -157,7 +157,7 @@
                 :disabled="stagedDeletes.has(schedule.id)"
                 :class="{ 'opacity-50 cursor-not-allowed': stagedDeletes.has(schedule.id) }"
                 :aria-label="`Edit ${schedule.name}`"
-                title="Edit"
+                title="编辑"
                 @click.stop="editingId = schedule.id"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
@@ -168,7 +168,7 @@
                 class="icon-btn"
                 :class="stagedDeletes.has(schedule.id) ? 'text-error' : 'text-text-secondary hover:text-error'"
                 :aria-label="stagedDeletes.has(schedule.id) ? `Keep ${schedule.name}` : `Delete ${schedule.name}`"
-                :title="stagedDeletes.has(schedule.id) ? 'Undo delete' : 'Delete'"
+                :title="stagedDeletes.has(schedule.id) ? '撤销删除' : '删除'"
                 @click.stop="toggleStagedDelete(schedule.id)"
               >
                 <IconTrash :size="16" />
@@ -184,11 +184,11 @@
     <!-- Row 4: inline logs -->
     <div v-if="showLogs" class="pt-2 border-t border-border">
       <div class="flex items-center justify-between mb-1">
-        <p class="text-text-secondary text-xs">Logs</p>
+        <p class="text-text-secondary text-xs">日志</p>
         <button
           class="icon-btn text-text-secondary hover:text-text"
-          aria-label="Refresh logs"
-          title="Refresh logs"
+          aria-label="刷新日志"
+          title="刷新日志"
           :disabled="logsLoading"
           :class="{ 'opacity-50 cursor-not-allowed': logsLoading }"
           @click.stop="emit('refresh-logs')"
@@ -200,7 +200,7 @@
         class="log-pane rounded border border-border/50 p-2 font-mono text-[11px] leading-relaxed text-text-secondary overflow-y-auto max-h-[300px] break-all"
       >
         <template v-if="logsLoading && logLines.length === 0">
-          <span class="text-muted italic">Loading logs...</span>
+          <span class="text-muted italic">正在加载日志...</span>
         </template>
         <template v-else-if="logLines.length > 0">
           <div
@@ -214,7 +214,7 @@
           <span class="text-error italic">{{ logError }}</span>
         </template>
         <template v-else>
-          <span class="text-muted italic">No logs available.</span>
+          <span class="text-muted italic">暂无可用日志。</span>
         </template>
       </div>
     </div>
@@ -240,9 +240,9 @@
 
     <ConfirmModal
       :is-open="confirmingDelete"
-      title="Delete Schedules"
+      title="删除计划任务"
       :message="deleteConfirmMessage"
-      confirm-label="Delete"
+      confirm-label="删除"
       variant="danger"
       @confirm="applyManage"
       @cancel="confirmingDelete = false"
@@ -367,9 +367,9 @@ const deleteConfirmMessage = computed(() => {
   const count = stagedDeletes.value.size;
   if (count === 1) {
     const doomed = containerSchedules.value.find((s) => stagedDeletes.value.has(s.id));
-    return `Delete "${doomed?.name ?? 'this schedule'}"? This cannot be undone.`;
+    return `删除 "${doomed?.name ?? '此计划任务'}"？此操作无法撤销。`;
   }
-  return `Delete ${count} schedules? This cannot be undone.`;
+  return `删除 ${count} 个计划任务？此操作无法撤销。`;
 });
 
 function onDone() {
@@ -393,7 +393,7 @@ async function applyManage() {
     if (updates.length > 0) {
       const result = await scheduleStore.bulkSetEnabled(updates);
       if (!result.success) {
-        manageError.value = result.error ?? 'Failed to update schedules';
+        manageError.value = result.error ?? '更新计划任务失败';
         return;
       }
     }
@@ -402,7 +402,7 @@ async function applyManage() {
     if (ids.length > 0) {
       const result = await scheduleStore.bulkDelete(ids);
       if (!result.success) {
-        manageError.value = result.error ?? 'Failed to delete schedules';
+        manageError.value = result.error ?? '删除计划任务失败';
         return;
       }
     }

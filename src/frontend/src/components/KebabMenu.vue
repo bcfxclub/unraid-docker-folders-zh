@@ -115,7 +115,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   position: 'below',
-  buttonTitle: 'More actions',
+  buttonTitle: '更多操作',
   buttonClass: 'p-1.5 rounded cursor-pointer text-text-secondary hover:text-text transition',
   iconSize: 16,
   fitViewport: true,

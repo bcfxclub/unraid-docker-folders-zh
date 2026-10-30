@@ -6,33 +6,33 @@
       <input
         v-model="query"
         type="text"
-        placeholder="Search containers..."
+        placeholder="搜索容器..."
         class="form-input subtle"
         :style="{ paddingRight: query ? '28px' : undefined }"
       />
       <button
         v-if="query"
         class="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text cursor-pointer leading-none"
-        title="Clear search"
-        aria-label="Clear search"
+        title="清除搜索"
+        aria-label="清除搜索"
         @click="query = ''"
       >&times;</button>
     </div>
 
     <div v-if="prefs.showStats && runningIds.length > 0" class="widget-total pb-2 mb-1 border-b border-border" :title="totalTitle">
       <div class="flex items-center justify-between px-2 mb-1 text-xs">
-        <span class="font-semibold">All running</span>
-        <span class="text-text-secondary">{{ runningIds.length }} {{ runningIds.length === 1 ? 'container' : 'containers' }}</span>
+        <span class="font-semibold">全部运行中</span>
+        <span class="text-text-secondary">{{ runningIds.length }} {{ runningIds.length === 1 ? '容器' : '容器' }}</span>
       </div>
       <div class="grid grid-cols-2 gap-3 px-2">
         <WidgetArcGauge label="CPU" :percent="runningTotal?.cpuPercent" :detail="cpuDetail" />
-        <WidgetArcGauge label="Memory" :percent="runningTotal?.memPercent" :detail="memoryDetail" />
+        <WidgetArcGauge label="内存" :percent="runningTotal?.memPercent" :detail="memoryDetail" />
       </div>
     </div>
 
     <!-- Placeholder rows shaped like WidgetContainerRow while the first load runs. -->
     <div v-if="isLoading" role="status" aria-busy="true" class="flex flex-col">
-      <span class="sr-only">Loading...</span>
+      <span class="sr-only">加载中...</span>
       <div v-for="width in SKELETON_NAME_WIDTHS" :key="width" class="flex items-center gap-2 py-1 pl-2 pr-1">
         <span class="skeleton size-6 shrink-0 rounded-full!" />
         <span class="skeleton h-3" :style="{ width }" />
@@ -43,9 +43,9 @@
         </template>
       </div>
     </div>
-    <p v-else-if="error" class="text-xs text-error py-1">Error: {{ error }}</p>
+    <p v-else-if="error" class="text-xs text-error py-1">错误：{{ error }}</p>
     <p v-else-if="groups.length === 0" class="text-xs text-text-secondary py-1">
-      {{ query ? 'No containers match.' : prefs.hideStopped ? 'No running containers.' : 'No containers.' }}
+      {{ query ? '没有匹配的容器。' : prefs.hideStopped ? '没有运行中的容器。' : '没有容器。' }}
     </p>
 
     <div v-else class="flex flex-col">
@@ -77,23 +77,23 @@
             <span
               v-if="group.crashed > 0"
               class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
-              :title="`${group.crashed} container${group.crashed > 1 ? 's' : ''} that crashed`"
-            >{{ group.crashed }} crashed</span>
+              :title="`${group.crashed} 容器${group.crashed > 1 ? 's' : ''}已崩溃`"
+            >{{ group.crashed }} 已崩溃</span>
             <template v-if="prefs.showTags">
               <span
                 v-if="group.updates > 0"
                 class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
-                :title="`${group.updates} update${group.updates > 1 ? 's' : ''} available`"
-              >{{ group.updates }} update{{ group.updates > 1 ? 's' : '' }}</span>
+                :title="`${group.updates} 更新${group.updates > 1 ? 's' : ''}可用`"
+              >{{ group.updates }} 更新{{ group.updates > 1 ? 's' : '' }}</span>
               <span
                 v-if="group.failed > 0"
                 class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-error/15 text-error"
-                :title="`${group.failed} container${group.failed > 1 ? 's' : ''} with a failed scheduled run`"
-              >{{ group.failed }} failed</span>
+                :title="`${group.failed} 容器${group.failed > 1 ? 's' : ''}计划任务运行失败`"
+              >{{ group.failed }} 失败</span>
             </template>
             <span
               class="shrink-0 text-xs text-text-secondary"
-              :title="`${group.running} running / ${group.total} total`"
+              :title="`${group.running} 运行中 / ${group.total} 总数`"
             >{{ group.running }}/{{ group.total }}</span>
           </div>
         </div>
@@ -217,7 +217,7 @@ const allGroups = computed<Group[]>(() => {
     // is how the Folders page treats unfoldered containers.
     result.push(makeGroup(`folder-${folder.id}`, folder.name, folder.color || 'var(--header-background, #ff8c2f)', members));
   }
-  result.push(makeGroup(OTHER_KEY, 'Other', NO_TINT, dockerStore.unfolderedContainers));
+  result.push(makeGroup(OTHER_KEY, '其他', NO_TINT, dockerStore.unfolderedContainers));
   return result;
 });
 
@@ -281,7 +281,7 @@ const runningTotal = computed(() => {
 const cpuDetail = computed(() => {
   const t = runningTotal.value;
   if (!t) return '';
-  return t.hostCpus === 1 ? 'of 1 core' : `of ${t.hostCpus} cores`;
+  return t.hostCpus === 1 ? '占 1 核' : `占 ${t.hostCpus} 核`;
 });
 const memoryDetail = computed(() => {
   const t = runningTotal.value;
@@ -289,9 +289,9 @@ const memoryDetail = computed(() => {
 });
 const totalTitle = computed(() => {
   const t = runningTotal.value;
-  if (!t) return 'Loading stats';
-  const cores = t.hostCpus === 1 ? '1 core' : `${t.hostCpus} cores`;
-  return `CPU ${formatPercent(t.cpuPercent)} of ${cores} · Memory ${formatBytes(t.memoryUsage)} / ${formatBytes(t.hostMemory)}`;
+  if (!t) return '加载统计中';
+  const cores = t.hostCpus === 1 ? '1 核' : `${t.hostCpus} 核`;
+  return `CPU ${formatPercent(t.cpuPercent)} ${cores} · 内存 ${formatBytes(t.memoryUsage)} / ${formatBytes(t.hostMemory)}`;
 });
 
 // The cog in the tile header lives in the dashboard page, outside this frame,

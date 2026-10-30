@@ -10,7 +10,7 @@
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
     <span class="text-text flex-1">
-      The GraphQL backend is unavailable, so this page is using the PHP backend. {{ fallbackReason }}
+      GraphQL 后端不可用，因此本页面正在使用 PHP 后端。{{ fallbackReason }}
     </span>
   </div>
 </template>

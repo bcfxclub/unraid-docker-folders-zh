@@ -43,7 +43,7 @@ const linkAttrs = computed(() =>
 );
 
 const title = computed(() =>
-  props.href ? `Open WebUI · ${props.statusTooltip}` : props.statusTooltip,
+  props.href ? `打开 WebUI · ${props.statusTooltip}` : props.statusTooltip,
 );
 
 // `.stop` can't be conditional, and stopping unconditionally would break

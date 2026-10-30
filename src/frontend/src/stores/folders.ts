@@ -118,7 +118,7 @@ export const useFolderStore = defineStore('folders', () => {
       unfolderedOrder.value = Array.isArray(data.unfoldered_order) ? data.unfoldered_order : [];
       initialLoadDone = true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error fetching folders:', e);
     } finally {
       loading.value = false;
@@ -132,7 +132,7 @@ export const useFolderStore = defineStore('folders', () => {
       const { ok, data: result } = await useBackend().folders.create(data);
 
       if (!ok) {
-        throw new Error(`Failed to create folder`);
+        throw new Error(`创建文件夹失败`);
       }
 
       const newFolder = result.folder as Folder;
@@ -142,7 +142,7 @@ export const useFolderStore = defineStore('folders', () => {
 
       return newFolder;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error creating folder:', e);
       return null;
     }
@@ -155,7 +155,7 @@ export const useFolderStore = defineStore('folders', () => {
       const { ok, data: result } = await useBackend().folders.update(id, data);
 
       if (!ok) {
-        throw new Error(`Failed to update folder`);
+        throw new Error(`更新文件夹失败`);
       }
 
       const updatedFolder = result.folder as Folder;
@@ -168,7 +168,7 @@ export const useFolderStore = defineStore('folders', () => {
 
       return true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error updating folder:', e);
       return false;
     }
@@ -181,7 +181,7 @@ export const useFolderStore = defineStore('folders', () => {
       const { ok } = await useBackend().folders.remove(id);
 
       if (!ok) {
-        throw new Error(`Failed to delete folder`);
+        throw new Error(`删除文件夹失败`);
       }
 
       // Remove from local state
@@ -189,7 +189,7 @@ export const useFolderStore = defineStore('folders', () => {
 
       return true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error deleting folder:', e);
       return false;
     }
@@ -203,7 +203,7 @@ export const useFolderStore = defineStore('folders', () => {
       });
 
       if (!ok) {
-        throw new Error(`Failed to add container to folder`);
+        throw new Error(`添加容器到文件夹失败`);
       }
 
       const updatedFolder = result.folder as Folder;
@@ -233,7 +233,7 @@ export const useFolderStore = defineStore('folders', () => {
       });
 
       if (!ok) {
-        throw new Error(`Failed to remove container from folder`);
+        throw new Error(`从文件夹移除容器失败`);
       }
 
       return true;
@@ -370,7 +370,7 @@ export const useFolderStore = defineStore('folders', () => {
       });
 
       if (!ok) {
-        throw new Error(`Failed to reorder containers`);
+        throw new Error(`重新排序容器失败`);
       }
 
       const updatedFolder = result.folder as Folder;
@@ -402,7 +402,7 @@ export const useFolderStore = defineStore('folders', () => {
       });
 
       if (!ok) {
-        throw new Error(`Failed to reorder unfoldered containers`);
+        throw new Error(`重新排序未分文件夹的容器失败`);
       }
 
       unfolderedOrder.value = Array.isArray(result.unfoldered_order) ? result.unfoldered_order : containerNames;
@@ -422,7 +422,7 @@ export const useFolderStore = defineStore('folders', () => {
       });
 
       if (!ok) {
-        throw new Error(`Failed to reorder folders`);
+        throw new Error(`重新排序文件夹失败`);
       }
 
       // Refresh folders to update positions
@@ -440,7 +440,7 @@ export const useFolderStore = defineStore('folders', () => {
       const { ok, data } = await useBackend().folders.exportConfig();
 
       if (!ok) {
-        throw new Error(`Failed to export configuration`);
+        throw new Error(`导出配置失败`);
       }
 
       return data;
@@ -458,7 +458,7 @@ export const useFolderStore = defineStore('folders', () => {
       const { ok, data: result } = await useBackend().folders.importConfig(config);
 
       if (!ok) {
-        throw new Error(`Failed to import configuration`);
+        throw new Error(`导入配置失败`);
       }
 
       // Refresh folders
@@ -466,7 +466,7 @@ export const useFolderStore = defineStore('folders', () => {
 
       return result;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error importing configuration:', e);
       return null;
     } finally {

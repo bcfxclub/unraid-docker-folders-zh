@@ -5,7 +5,7 @@
     :message="copy.message"
     :confirm-label="copy.title"
     variant="danger"
-    checkbox-label="Don't ask again (turn it back on in Settings > Docker Folders)"
+    checkbox-label="不再询问（可在 设置 > Docker 文件夹 中重新开启）"
     @confirm="emit('confirm', $event)"
     @cancel="emit('cancel')"
   />
@@ -31,13 +31,13 @@ const copy = computed(() => {
   const { project, action } = props.pending;
   if (action === 'recompose') {
     return {
-      title: 'Recompose',
-      message: `Pull the latest images for "${project}" and rebuild every container in it? Each container is deleted and created again from the compose file, even if nothing changed. Volumes and the compose file are kept. Anything a container wrote outside a volume is lost.`,
+      title: '重建',
+      message: `拉取 "${project}" 的最新镜像并重建其中的每个容器？即使没有任何变更，每个容器也会根据 Compose 文件被删除并重新创建。卷和 Compose 文件会被保留。容器在卷外写入的任何内容都会丢失。`,
     };
   }
   return {
-    title: 'Stack Down',
-    message: `Run docker compose down for "${project}"? Its containers and networks are deleted. Volumes and the compose file are kept, and Stack Up creates new containers. Anything a container wrote outside a volume is lost.`,
+      title: '停止堆栈',
+      message: `对 "${project}" 运行 docker compose down？其容器和网络将被删除。卷和 Compose 文件会被保留，而 Compose Up 会创建新容器。容器在卷外写入的任何内容都会丢失。`,
   };
 });
 </script>

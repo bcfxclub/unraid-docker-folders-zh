@@ -17,7 +17,7 @@ export interface StackActionStatus {
 
 /** What a stack's row or header says about a stop or down. */
 export function stackActionText(status: StackActionStatus): string {
-  return status.error ?? (status.kind === 'down' ? 'Removing…' : 'Stopping…');
+  return status.error ?? (status.kind === 'down' ? '正在删除…' : '正在停止…');
 }
 
 export const useComposeStore = defineStore('compose', () => {
@@ -68,12 +68,12 @@ export const useComposeStore = defineStore('compose', () => {
    * Null when they are usable.
    */
   const composeDisabledReason = computed<string | null>(() => {
-    if (!statusChecked.value) return 'Checking Docker Compose availability...';
-    if (!status.value.compose_available) return 'Docker Compose is not installed';
+    if (!statusChecked.value) return '正在检查 Docker Compose 可用性...';
+    if (!status.value.compose_available) return 'Docker Compose 未安装';
     if (status.value.compose_plugin_installed) {
-      return 'Disabled: the Compose Manager plugin is installed';
+      return '已禁用：已安装 Compose Manager 插件';
     }
-    if (!status.value.management_enabled) return 'Compose management is unavailable';
+    if (!status.value.management_enabled) return 'Compose 管理不可用';
     return null;
   });
 
@@ -112,7 +112,7 @@ export const useComposeStore = defineStore('compose', () => {
       stacks.value = data.stacks || [];
       initialLoadDone = true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error fetching compose stacks:', e);
     } finally {
       loading.value = false;
@@ -127,13 +127,13 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.installBinary();
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to install Docker Compose');
+        throw new Error(data.message || '安装 Docker Compose 失败');
       }
 
       status.value = data.status as ComposeStatus;
       return true;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error';
+      error.value = e instanceof Error ? e.message : '未知错误';
       console.error('Error installing compose binary:', e);
       return false;
     } finally {
@@ -146,13 +146,13 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.stackAction(project, 'up', { force_recreate: forceRecreate });
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to start stack');
+        throw new Error(data.message || '启动堆栈失败');
       }
 
       await fetchStacks(true);
       return data;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       console.error('Error starting stack:', e);
       return { success: false, error: msg };
     }
@@ -163,13 +163,13 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.stackAction(project, 'down');
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to stop stack');
+        throw new Error(data.message || '停止堆栈失败');
       }
 
       await fetchStacks(true);
       return data;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       console.error('Error stopping stack:', e);
       return { success: false, error: msg };
     }
@@ -180,13 +180,13 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.stackAction(project, 'stop');
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to stop stack');
+        throw new Error(data.message || '停止堆栈失败');
       }
 
       await fetchStacks(true);
       return data;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       console.error('Error stopping stack:', e);
       return { success: false, error: msg };
     }
@@ -231,7 +231,7 @@ export const useComposeStore = defineStore('compose', () => {
       await Promise.all([useDockerStore().fetchContainers(), useFolderStore().fetchFolders()]);
     } finally {
       if (result.success) stackActionStatus.value.delete(project);
-      else stackActionStatus.value.set(project, { kind, error: result.error || 'Failed' });
+      else stackActionStatus.value.set(project, { kind, error: result.error || '失败' });
     }
   }
 
@@ -240,13 +240,13 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.stackAction(project, 'restart');
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to restart stack');
+        throw new Error(data.message || '重启堆栈失败');
       }
 
       await fetchStacks(true);
       return data;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       console.error('Error restarting stack:', e);
       return { success: false, error: msg };
     }
@@ -266,7 +266,7 @@ export const useComposeStore = defineStore('compose', () => {
       // here means the request itself failed and there is nothing to report
       // line by line.
       if (!ok && !Array.isArray(data.errors)) {
-        return { success: false, errors: [{ line: 1, message: failure ?? 'Request failed' }] };
+        return { success: false, errors: [{ line: 1, message: failure ?? '请求失败' }] };
       }
       return {
         success: !!data.success,
@@ -274,7 +274,7 @@ export const useComposeStore = defineStore('compose', () => {
         output: data.output,
       };
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       return { success: false, errors: [{ line: 1, message: msg }] };
     }
   }
@@ -289,7 +289,7 @@ export const useComposeStore = defineStore('compose', () => {
 
       return { content: data.content ?? null, path: data.path ?? null };
     } catch (e) {
-      return { content: null, path: null, error: e instanceof Error ? e.message : 'Unknown error' };
+      return { content: null, path: null, error: e instanceof Error ? e.message : '未知错误' };
     }
   }
 
@@ -298,7 +298,7 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.saveFile(project, { content });
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to save compose file');
+        throw new Error(data.message || '保存 Compose 文件失败');
       }
 
       return true;
@@ -318,7 +318,7 @@ export const useComposeStore = defineStore('compose', () => {
 
       return { content: data.content ?? null, path: data.path ?? null };
     } catch (e) {
-      return { content: null, path: null, error: e instanceof Error ? e.message : 'Unknown error' };
+      return { content: null, path: null, error: e instanceof Error ? e.message : '未知错误' };
     }
   }
 
@@ -327,7 +327,7 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok, data } = await useBackend().compose.saveEnv(project, { content });
 
       if (!ok) {
-        throw new Error(data.message || 'Failed to save env file');
+        throw new Error(data.message || '保存 env 文件失败');
       }
 
       return true;
@@ -342,7 +342,7 @@ export const useComposeStore = defineStore('compose', () => {
       const { ok } = await useBackend().compose.setEnvPath(project, { path });
 
       if (!ok) {
-        throw new Error('Failed to set env file path');
+        throw new Error('设置 env 文件路径失败');
       }
 
       await fetchStacks(true);
@@ -361,7 +361,7 @@ export const useComposeStore = defineStore('compose', () => {
       });
 
       if (!ok) {
-        throw new Error('Failed to set autostart');
+        throw new Error('设置自动启动失败');
       }
 
       // Update local state
@@ -386,7 +386,7 @@ export const useComposeStore = defineStore('compose', () => {
       }
       return { output: data.output || '', error: data.error || undefined };
     } catch (e) {
-      return { output: '', error: e instanceof Error ? e.message : 'Unknown error' };
+      return { output: '', error: e instanceof Error ? e.message : '未知错误' };
     }
   }
 
@@ -408,7 +408,7 @@ export const useComposeStore = defineStore('compose', () => {
 
       return result;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       error.value = msg;
       console.error('Error importing from compose plugin:', e);
       return {
@@ -434,14 +434,14 @@ export const useComposeStore = defineStore('compose', () => {
         env_content: envContent,
       });
       if (!ok) {
-        return { success: false, error: data.message || 'Failed to create stack' };
+        return { success: false, error: data.message || '创建堆栈失败' };
       }
 
       // Refresh stacks and folders
       await Promise.all([fetchStacks(true), fetchStatus()]);
       return { success: true };
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : '未知错误';
       return { success: false, error: msg };
     }
   }
@@ -470,7 +470,7 @@ export const useComposeStore = defineStore('compose', () => {
       }
       return { version: data.version ?? null };
     } catch (e) {
-      return { version: null, error: e instanceof Error ? e.message : 'Unknown error' };
+      return { version: null, error: e instanceof Error ? e.message : '未知错误' };
     }
   }
 

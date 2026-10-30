@@ -3,7 +3,7 @@
        follow FolderHeader and ContainerCard, so the page does not jump when
        the data arrives. -->
   <div role="status" aria-busy="true" class="loading-skeleton">
-    <span class="sr-only">Loading...</span>
+    <span class="sr-only">加载中...</span>
     <div v-for="folder in FOLDERS" :key="folder.name" class="mb-2">
       <div class="flex items-center gap-2 px-3 py-3 sm:px-6 sm:py-4 bg-bg-card rounded-sm">
         <span class="skeleton size-4 shrink-0" />

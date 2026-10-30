@@ -1,10 +1,10 @@
 <template>
-  <nav aria-label="Compose stacks" class="border border-border rounded bg-bg-card p-1">
+  <nav aria-label="Compose 堆栈" class="border border-border rounded bg-bg-card p-1">
     <div class="flex items-center justify-between px-2 pt-1.5 pb-1">
-      <h2 class="text-[11px] font-bold uppercase text-text-secondary">Compose stacks</h2>
+      <h2 class="text-[11px] font-bold uppercase text-text-secondary">Compose 堆栈</h2>
       <span class="text-[11px] text-text-secondary">{{ rows.length }}</span>
     </div>
-    <p v-if="rows.length === 0" class="px-2 py-2 text-xs text-text-secondary">No compose stacks</p>
+    <p v-if="rows.length === 0" class="px-2 py-2 text-xs text-text-secondary">没有 Compose 堆栈</p>
     <!-- The row is a div so the selected and hover tints apply: the button
          reset strips background and padding from a plain <button> (DESIGN.md
          §11), so the button carries no box of its own and its padding lives on
@@ -19,14 +19,14 @@
         type="button"
         class="flex-1 min-w-0 text-left cursor-pointer text-text"
         :aria-pressed="isSelected(row.project)"
-        :title="isSelected(row.project) ? 'Show all containers' : `Show only ${row.project}`"
+        :title="isSelected(row.project) ? '显示所有容器' : `仅显示 ${row.project}`"
         @click="toggle(row.project)"
       >
         <span class="flex items-center gap-2 py-1.5 pl-2 pr-1">
           <span
             class="shrink-0 inline-flex items-center justify-center min-w-6 h-5 px-1.5 rounded-full text-[11px] font-semibold"
             :class="row.running > 0 ? 'bg-primary text-primary-text' : 'bg-border text-text-secondary'"
-            :title="`${row.running} running / ${row.total} total`"
+            :title="`${row.running} 运行中 / ${row.total} 总数`"
           >{{ row.running }}/{{ row.total }}</span>
           <span class="flex flex-col min-w-0">
             <span class="text-sm font-semibold truncate">{{ row.project }}</span>
@@ -40,7 +40,7 @@
       </button>
       <KebabMenu
         :items="menuItems(row)"
-        :button-title="`Actions for ${row.project}`"
+        :button-title="`${row.project} 的操作`"
         button-class="icon-btn text-text-secondary hover:text-text"
         no-wrap
         @select="(action) => handleSelect(row.project, action)"
@@ -107,15 +107,15 @@ const rows = computed<StackRow[]>(() => {
 });
 
 function locationText(members: Container[]): string {
-  if (members.length === 0) return 'Not created';
+  if (members.length === 0) return '未创建';
   const names: string[] = [];
   for (const c of members) {
-    const name = folderStore.folderByContainerName.get(c.name)?.name ?? 'Unfoldered';
+    const name = folderStore.folderByContainerName.get(c.name)?.name ?? '未分类';
     if (!names.includes(name)) names.push(name);
   }
   const listed = names.slice(0, MAX_LISTED_FOLDERS).join(', ');
   const rest = names.length - MAX_LISTED_FOLDERS;
-  return rest > 0 ? `In ${listed} +${rest} more` : `In ${listed}`;
+  return rest > 0 ? `在 ${listed} 及另外 ${rest} 个文件夹中` : `在 ${listed} 中`;
 }
 
 /** A stop or down in progress, or its failure, replaces the folder line. */
@@ -139,11 +139,11 @@ function menuItems(row: StackRow): KebabMenuItem[] {
     reason,
     pluginInstalled: composeStore.composePluginInstalled,
   });
-  items.push({ label: 'Schedules', icon: STOPWATCH_ICON, action: 'schedules' });
+  items.push({ label: '计划任务', icon: STOPWATCH_ICON, action: 'schedules' });
   return [
     ...byLabel(items),
     { divider: true },
-    { label: 'Stack Down', icon: TRASH_ICON, action: 'compose-down', show: row.total > 0, disabled, title: reason, class: 'hover:text-error' },
+    { label: '停止堆栈', icon: TRASH_ICON, action: 'compose-down', show: row.total > 0, disabled, title: reason, class: 'hover:text-error' },
   ];
 }
 

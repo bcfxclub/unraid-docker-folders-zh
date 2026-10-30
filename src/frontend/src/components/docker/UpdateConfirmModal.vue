@@ -1,12 +1,12 @@
 <template>
   <BaseModal v-if="!inIframe" :is-open="isOpen" max-width="512px" @close="$emit('cancel')">
     <div class="px-6 py-4 border-b border-border">
-      <h2 class="text-base font-semibold text-text">Update Containers</h2>
+      <h2 class="text-base font-semibold text-text">更新容器</h2>
       <p v-if="!isEmpty" class="text-sm text-text-secondary mt-1">{{ summary }}</p>
     </div>
 
     <p v-if="isEmpty" class="px-6 py-6 text-sm text-text-secondary">
-      Everything is up to date.
+      已全部是最新版本。
     </p>
 
     <div v-else class="max-h-[320px] overflow-auto">
@@ -32,8 +32,8 @@
               target="_blank"
               rel="noopener noreferrer"
               class="shrink-0 text-text-secondary hover:text-text"
-              title="View release notes"
-              aria-label="View release notes"
+              title="查看发布说明"
+              aria-label="查看发布说明"
               @click.stop
             >
               <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
@@ -43,12 +43,12 @@
         <span
           v-if="unit.kind === 'compose'"
           class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-medium border border-border text-text-secondary"
-        >stack</span>
+        >堆栈</span>
       </label>
     </div>
 
     <div v-if="isEmpty" class="flex justify-end gap-2 px-6 py-3 border-t border-border">
-      <button type="button" @click="$emit('cancel')" class="nav-btn active">Close</button>
+      <button type="button" @click="$emit('cancel')" class="nav-btn active">关闭</button>
     </div>
     <div v-else class="flex items-center gap-2 px-6 py-3 border-t border-border">
       <button
@@ -58,9 +58,9 @@
         class="nav-btn"
         :class="{ 'opacity-50 cursor-not-allowed': checking }"
         :disabled="checking"
-      >{{ checking ? 'Checking…' : 'Check Again' }}</button>
+      >{{ checking ? '检查中…' : '重新检查' }}</button>
       <span class="flex-1"></span>
-      <button type="button" @click="$emit('cancel')" class="nav-btn" :disabled="checking">Cancel</button>
+      <button type="button" @click="$emit('cancel')" class="nav-btn" :disabled="checking">取消</button>
       <button
         ref="confirmBtn"
         type="button"
@@ -68,7 +68,7 @@
         class="nav-btn active"
         :class="{ 'opacity-50 cursor-not-allowed': selected.size === 0 || checking }"
         :disabled="selected.size === 0 || checking"
-      >Update</button>
+      >更新</button>
     </div>
   </BaseModal>
 </template>
@@ -120,8 +120,8 @@ const isEmpty = computed(() => props.units.length === 0);
 const summary = computed(() => {
   const n = containerCount.value;
   return n === 1
-    ? '1 container will be updated.'
-    : `${n} containers will be updated.`;
+    ? '1 个容器将被更新。'
+    : `${n} 个容器将被更新。`;
 });
 
 function containerNames(unit: UpdateUnit): string {
@@ -195,20 +195,20 @@ const { inIframe } = parentModal;
  */
 const parentActions = computed<ModalAction[]>(() => {
   if (isEmpty.value) {
-    return [{ id: 'cancel', label: 'Close', variant: 'primary' }];
+    return [{ id: 'cancel', label: '关闭', variant: 'primary' }];
   }
   const actions: ModalAction[] = [];
   if (props.canRecheck) {
     actions.push({
       id: 'recheck',
-      label: props.checking ? 'Checking…' : 'Check Again',
+      label: props.checking ? '检查中…' : '重新检查',
       variant: 'default',
       disabled: props.checking,
     });
   }
   actions.push(
-    { id: 'cancel', label: 'Cancel', variant: 'default', disabled: props.checking },
-    { id: 'confirm', label: 'Update', variant: 'primary', disabled: props.checking },
+    { id: 'cancel', label: '取消', variant: 'default', disabled: props.checking },
+    { id: 'confirm', label: '更新', variant: 'primary', disabled: props.checking },
   );
   return actions;
 });
@@ -216,16 +216,16 @@ const parentActions = computed<ModalAction[]>(() => {
 function openParent() {
   parentModal.open({
     kind: 'update-confirm',
-    title: 'Update Containers',
+    title: '更新容器',
     size: 'md',
     fields: isEmpty.value
-      ? [{ type: 'text', text: 'Everything is up to date.' }]
+      ? [{ type: 'text', text: '已全部是最新版本。' }]
       : [
           { type: 'text', text: summary.value },
           {
             type: 'checkbox-list',
             id: 'units',
-            caption: 'Uncheck anything you want to skip.',
+            caption: '取消勾选任何您想跳过的项。',
             items: props.units.map((unit) => ({
               id: unit.id,
               // The parent renderer gives items a single label line plus a small
@@ -234,7 +234,7 @@ function openParent() {
               label: `${containerNames(unit)} — ${unitLabel(unit)}`,
               sublabel: noteFor(unit) ?? undefined,
               sublabelUrl: urlFor(unit) ?? undefined,
-              state: unit.kind === 'compose' ? 'stack' : undefined,
+              state: unit.kind === 'compose' ? '堆栈' : undefined,
               checked: true,
             })),
           },

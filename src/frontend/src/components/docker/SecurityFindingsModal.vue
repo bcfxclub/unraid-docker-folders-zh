@@ -3,10 +3,7 @@
     <div class="px-6 py-4 border-b border-border">
       <h2 class="text-base font-semibold text-text">{{ heading }}</h2>
       <p class="text-sm text-text-secondary mt-1">
-        Settings that give a container more of the server than it usually needs,
-        and folders two containers write as users that cannot read each other's
-        files. Nothing here is changed for you, and where the plugin can tell
-        what to put back, the finding says so in Unraid's own wording.
+        本面板列出会让容器占用超出常规份额的服务器资源，以及两个容器以彼此无法读取对方文件的用户身份写入的文件夹。此处不会为您做任何更改，而在插件能够判断如何还原时，发现项中会以 Unraid 自身的表述加以说明。
       </p>
     </div>
 
@@ -20,7 +17,7 @@
            per-container list hard to scan. -->
       <section v-if="folderRows.length > 0" class="mb-5">
         <h3 class="text-[10px] font-semibold uppercase tracking-wide text-text-secondary border-b border-border pb-1 mb-2">
-          Shared folder conflicts
+          共享文件夹冲突
         </h3>
 
         <div
@@ -42,14 +39,14 @@
                  folder, which is the number that decides whether to look. -->
             <span
               class="shrink-0 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[11px] font-semibold bg-warning/20 text-warning"
-              :title="`${conflict.writers.length} containers write this folder`"
+              :title="`${conflict.writers.length} 个容器写入此文件夹`"
             >{{ conflict.writers.length }}</span>
             <button
               type="button"
               class="nav-btn shrink-0"
-              title="Accept this folder and hide it, for every container on it"
+              title="接受此文件夹冲突并隐藏，对该文件夹上的每个容器生效"
               @click.stop="dismissConflict(conflict)"
-            >Dismiss</button>
+            >忽略</button>
           </div>
 
           <template v-if="isOpenConflict(conflict.path)">
@@ -81,7 +78,7 @@
         v-if="rows.length > 0"
         class="text-[10px] font-semibold uppercase tracking-wide text-text-secondary border-b border-border pb-1 mb-2"
       >
-        Container settings
+        容器设置
       </h3>
 
       <div v-for="row in rows" :key="row.container.id" class="mb-3 last:mb-0">
@@ -106,7 +103,7 @@
           <span
             class="shrink-0 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[11px] font-semibold"
             :class="row.worst === 'critical' ? 'bg-error/15 text-error' : 'bg-warning/20 text-warning'"
-            :title="`${row.findings.length} finding${row.findings.length === 1 ? '' : 's'}`"
+            :title="`${row.findings.length} 项发现`"
           >{{ row.findings.length }}</span>
           <!-- The image page documents the ports and variables this panel keeps
                telling people to go and check, so it belongs on the container,
@@ -141,14 +138,14 @@
             <span
               class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded"
               :class="finding.severity === 'critical' ? 'bg-error/15 text-error' : 'bg-warning/20 text-warning'"
-            >{{ finding.severity === 'critical' ? 'Critical' : 'Warning' }}</span>
+            >{{ finding.severity === 'critical' ? '严重' : '警告' }}</span>
             <p class="flex-1 text-sm font-semibold text-text min-w-0">{{ finding.title }}</p>
             <button
               type="button"
               class="nav-btn shrink-0"
-              :title="showDismissed ? 'Show this finding again' : 'Accept this setting and hide the finding'"
+              :title="showDismissed ? '再次显示此发现' : '接受此设置并隐藏该发现'"
               @click.stop="toggle(row.container.name, finding.type)"
-            >{{ showDismissed ? 'Restore' : 'Dismiss' }}</button>
+            >{{ showDismissed ? '恢复' : '忽略' }}</button>
           </div>
 
           <template v-if="isOpenFinding(row.container.id, finding.type)">
@@ -157,7 +154,7 @@
                as one more paragraph about the risk. The label says which one it
                is, in the same type the table headers use. -->
           <p class="mt-4 mb-1 text-[10px] font-semibold uppercase tracking-wide text-text-secondary">
-            How to change it
+            如何修改
           </p>
           <p class="text-sm text-text">{{ finding.fix }}</p>
           <!-- Detected on the left, recommended on the right. Both columns stay
@@ -170,8 +167,8 @@
               v-if="hasColumns(finding)"
               class="grid grid-cols-2 gap-x-3 pb-0.5 border-b border-border text-[10px] font-semibold uppercase tracking-wide text-text-secondary"
             >
-              <span>Detected</span>
-              <span>Consider</span>
+              <span>检测到</span>
+              <span>建议</span>
             </div>
             <div
               v-for="(item, i) in finding.detail"
@@ -192,7 +189,7 @@
                 <span
                   class="break-all"
                   :class="item.add ? 'font-mono text-text' : 'text-muted'"
-                >{{ item.add || (item.remove ? 'removal' : '') }}
+                >{{ item.add || (item.remove ? '移除' : '') }}
                   <InfoIcon v-if="item.addNote" :text="item.addNote" />
                 </span>
               </div>
@@ -216,18 +213,17 @@
       </div>
 
       <p v-if="showDismissed && rows.length > 0" class="mt-4 text-xs text-text-secondary">
-        A suggested port means no other container is using it. Ports held by
-        Unraid itself, such as the webgui or SMB, are not visible here.
+        建议的端口意味着没有其他容器正在使用它。由 Unraid 自身占用的端口（例如 webgui 或 SMB）不会显示在此处。
       </p>
     </div>
 
     <div class="flex items-center gap-2 px-6 py-3 border-t border-border">
       <label class="flex items-center gap-2 text-xs text-text-secondary cursor-pointer">
         <input v-model="showDismissed" type="checkbox" />
-        Show dismissed
+        显示已忽略项
       </label>
       <span class="flex-1"></span>
-      <button type="button" class="nav-btn" @click="$emit('close')">Close</button>
+      <button type="button" class="nav-btn" @click="$emit('close')">关闭</button>
     </div>
   </BaseModal>
 </template>
@@ -263,8 +259,8 @@ import InfoIcon from '@/components/common/InfoIcon.vue';
  * would have been false.
  */
 const DOCS_LABELS: Record<string, string> = {
-  'docs.docker.com': 'Docker documentation',
-  'docs.linuxserver.io': 'linuxserver.io documentation',
+  'docs.docker.com': 'Docker 文档',
+  'docs.linuxserver.io': 'linuxserver.io 文档',
 };
 
 /** True when any row of this finding names a setting or a replacement. */
@@ -274,9 +270,9 @@ function hasColumns(finding: SecurityFinding): boolean {
 
 function docsLabel(url: string): string {
   try {
-    return DOCS_LABELS[new URL(url).hostname] ?? 'Documentation';
+    return DOCS_LABELS[new URL(url).hostname] ?? '文档';
   } catch {
-    return 'Documentation';
+    return '文档';
   }
 }
 
@@ -398,16 +394,16 @@ function resetOpen() {
 
 const heading = computed(() =>
   props.container
-    ? `Security findings for ${props.container.name}`
-    : 'Security findings — running containers',
+    ? `关于 ${props.container.name} 的安全发现`
+    : '运行中容器的安全发现',
 );
 
 const emptyText = computed(() =>
   showDismissed.value
-    ? 'Nothing is dismissed.'
+    ? '没有已忽略的项。'
     : props.container
-      ? 'This container has no open findings.'
-      : 'No running container has an open finding.',
+      ? '此容器没有未处理的安全发现。'
+      : '没有运行中的容器存在未处理的安全发现。',
 );
 
 /**
