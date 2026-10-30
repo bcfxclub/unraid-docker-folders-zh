@@ -6,7 +6,7 @@
 <!ENTITY md5 "1641bfeb52e09ea42e2bb2ba41df6e7a">
 <!ENTITY launch "Docker">
 <!ENTITY plugdir "/usr/local/emhttp/plugins/&name;">
-<!ENTITY github "bcfxclub/unraid-docker-folders">
+<!ENTITY github "bcfxclub/unraid-docker-folders-zh">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/&name;.plg">
 ]>
 
