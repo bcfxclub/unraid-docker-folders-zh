@@ -204,7 +204,7 @@ const tabs = computed(() => {
     { id: 'compose', label: 'Compose 文件' },
     { id: 'env', label: '环境' },
   ];
-  if (props.mode !== 'create') base.push({ id: 'logs', label: 'Logs' });
+  if (props.mode !== 'create') base.push({ id: 'logs', label: '日志' });
   return base;
 });
 

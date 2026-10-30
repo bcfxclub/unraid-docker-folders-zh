@@ -57,7 +57,7 @@
       </span>
       <!-- The kebab item that starts this check disappears with the menu, so
            the only sign it is running has to live in the always-visible header. -->
-      <span v-if="folderCheckingUpdates" class="shrink-0 inline-flex items-center gap-1 h-6 px-2 ml-1 text-xs text-text-secondary" title="Checking for image updates">
+      <span v-if="folderCheckingUpdates" class="shrink-0 inline-flex items-center gap-1 h-6 px-2 ml-1 text-xs text-text-secondary" title="正在检查镜像更新">
         <svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
         <span class="hidden sm:inline">正在检查…</span>
       </span>
@@ -65,12 +65,12 @@
       <!-- Folder total stats loading -->
       <div v-if="collapsed && settingsStore.showStats && !folderStats && runningCount > 0" class="hidden md:block ml-auto mr-4 shrink-0 w-[140px] space-y-0.5">
         <StatsBar label="CPU" :percent="null" size="inline" />
-        <StatsBar label="MEM" :percent="null" size="inline" />
+        <StatsBar label="内存" :percent="null" size="inline" />
       </div>
       <!-- Folder total stats, as a share of the host -->
       <div v-if="collapsed && settingsStore.showStats && folderStats" class="hidden md:block ml-auto mr-4 shrink-0 w-[140px] space-y-0.5" @click.stop>
         <StatsBar label="CPU" :percent="folderStats.cpuPercent" size="inline" />
-        <StatsBar label="MEM" :percent="folderStats.memPercent" size="inline" />
+        <StatsBar label="内存" :percent="folderStats.memPercent" size="inline" />
       </div>
     </div>
     <div class="relative flex items-center gap-2 sm:gap-3 shrink-0" @click.stop>

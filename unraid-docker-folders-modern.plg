@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name "unraid-docker-folders-modern">
 <!ENTITY author "rizowski">
-<!ENTITY version "2026.10.30.2">
-<!ENTITY md5 "3223150cb548e501c7337ca56fc8d1ad">
+<!ENTITY version "2026.10.30.3">
+<!ENTITY md5 "bc2120ad65ebd7d9c1026df54d93b288">
 <!ENTITY launch "Docker">
 <!ENTITY plugdir "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github "bcfxclub/unraid-docker-folders-zh">
@@ -19,6 +19,9 @@
 
 <CHANGES>
 **Docker 文件夹（简体中文版）** — 使用现代化的 Vue 3 界面、实时资源统计与实时更新，通过拖拽将 Docker 容器整理到文件夹中进行管理。本版本已对插件界面（前端与设置页）进行简体中文汉化。
+
+###2026.10.30.3
+- **汉化补全**：翻译了此前遗漏的英文界面文本——容器卡片「⋯」菜单（操作/自动启动/链接/选项，以及启动、停止、重启、恢复、控制台、日志、编辑、移除、检查更新、强制更新、纳入 Unraid 管理等）、操作确认弹窗、排序下拉（手动/名称/状态/最新优先/最旧优先）、统计条「内存」标签、定时任务预设（每小时/每天/每周/自定义）等，现已全面简体中文。
 
 ###2026.10.30.2
 - **修复：菜单不显示、功能无法使用**。上一版（2026.10.30.1）打包时所有文件使用了 Windows 的 CRLF 换行符，而 Unraid（Linux）解析 `.page` 头部 `Menu=`/`Title=` 指令时无法识别带 `\r` 的行，导致插件菜单（Docker › 文件夹、设置 › 工具 › Docker Folders）不注册，且无法进入页面。本版已将全部文件转为 LF 换行符，菜单与功能恢复正常。

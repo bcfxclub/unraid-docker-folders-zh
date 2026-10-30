@@ -31,7 +31,7 @@
           v-else-if="needsRecreate"
           class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
           :title="needsRecreateTitle"
-        >Not Applied</span>
+        >未应用</span>
         <span
           v-if="checkingUpdates"
           class="shrink-0 inline-flex items-center gap-1 text-[10px] text-text-secondary"
@@ -85,13 +85,13 @@
       <!-- Compact stats loading state -->
       <div v-if="isRunning && showStats && !containerStats && !expanded" class="px-4 sm:px-6 pb-1 space-y-1">
         <StatsBar label="CPU" :percent="null" />
-        <StatsBar label="MEM" :percent="null" />
+        <StatsBar label="内存" :percent="null" />
       </div>
   
       <!-- Compact stats bars (always visible for running containers) -->
       <div v-if="isRunning && containerStats && !expanded" class="px-4 sm:px-6 pb-1 space-y-1">
         <StatsBar label="CPU" :percent="containerStats.cpuPercent" />
-        <StatsBar label="MEM" :percent="containerStats.memoryPercent" />
+        <StatsBar label="内存" :percent="containerStats.memoryPercent" />
         <div v-if="containerStats.restartCount > 0" class="flex items-center gap-2 text-xs">
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-error/15 text-error rounded text-[11px] font-mono font-medium">
             {{ containerStats.restartCount }} 次重启
@@ -133,7 +133,7 @@
       </template>
       <!-- Autostart toggle -->
       <button v-if="isManaged" @click.stop="handleToggleAutostart" class="flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? '自动启动：开（点击停用）' : '自动启动：关（点击启用）'"><IconAutostart :size="20" /></button>
-      <span v-else class="flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`Autostart: ${manageHint}`"><IconAutostart :size="20" /></span>
+      <span v-else class="flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`自动启动：${manageHint}`"><IconAutostart :size="20" /></span>
       <!-- WebUI (always shown, disabled when no webui) -->
       <a v-if="resolvedWebui && isRunning" :href="resolvedWebui" target="_blank" rel="noopener" class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary hover:text-primary transition" title="打开 WebUI" @click.stop><IconGlobe :size="20" /></a>
       <span v-else class="flex items-center justify-center w-8 h-8 ml-auto rounded text-text-secondary opacity-30" title="未配置 WebUI。在容器的 Unraid 模板中设置 WebUI 字段以启用此项。"><IconGlobe :size="20" /></span>
@@ -182,7 +182,7 @@
             v-else-if="needsRecreate"
             class="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-warning/20 text-warning"
             :title="needsRecreateTitle"
-          >Not Applied</span>
+          >未应用</span>
           <span
             v-if="checkingUpdates"
             class="shrink-0 inline-flex items-center gap-1 text-[10px] text-text-secondary"
@@ -228,14 +228,14 @@
       <!-- Inline compact stats loading (list view) -->
       <div v-if="isRunning && showStats && !containerStats && !expanded" class="hidden md:block shrink-0 w-[140px] space-y-0.5">
         <StatsBar label="CPU" :percent="null" size="inline" />
-        <StatsBar label="MEM" :percent="null" size="inline" />
+        <StatsBar label="内存" :percent="null" size="inline" />
       </div>
 
       <!-- Inline compact stats (list view) -->
       <div v-if="isRunning && containerStats && !expanded" class="hidden md:flex shrink-0 items-center gap-3">
         <div class="w-[140px] space-y-0.5">
           <StatsBar label="CPU" :percent="containerStats.cpuPercent" size="inline" />
-          <StatsBar label="MEM" :percent="containerStats.memoryPercent" size="inline" />
+          <StatsBar label="内存" :percent="containerStats.memoryPercent" size="inline" />
         </div>
         <span v-if="containerStats.restartCount > 0" class="inline-flex items-center px-1.5 py-0.5 bg-error/15 text-error rounded text-[11px] font-mono font-medium shrink-0" :title="`${containerStats.restartCount} 次重启`">
           {{ containerStats.restartCount }} 次重启
@@ -265,7 +265,7 @@
         <!-- Adopt: only for a container Unraid does not manage yet -->
         <button v-if="canAdopt" @click.stop="openAdopt" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition text-primary hover:bg-primary hover:text-primary-text" title="接管到 Unraid —— 由 Unraid 管理此容器"><IconAdopt :size="18" /></button>
         <button v-if="isManaged" @click.stop="handleToggleAutostart" class="action-btn hidden sm:flex items-center justify-center w-8 h-8 border-none rounded cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed" :class="container.autostart ? 'text-success' : 'text-text-secondary hover:text-success'" :title="container.autostart ? '自动启动：开（点击停用）' : '自动启动：关（点击启用）'"><IconAutostart :size="18" /></button>
-        <span v-else class="action-btn hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`Autostart: ${manageHint}`"><IconAutostart :size="18" /></span>
+        <span v-else class="action-btn hidden sm:flex items-center justify-center w-8 h-8 rounded text-text-secondary opacity-30" :title="`自动启动：${manageHint}`"><IconAutostart :size="18" /></span>
         </template>
         <!-- Kebab menu -->
         <KebabMenu
@@ -303,7 +303,7 @@
     />
     <InputModal
       :is-open="showDelayModal"
-      title="Autostart Delay"
+      title="自动启动延迟"
       :description="`设置 ${container.name} 自动启动前的延迟（秒）。`"
       :initial-value="String(container.autostartDelay)"
       placeholder="0"
@@ -433,7 +433,7 @@ const folderTargets = computed(() => {
     .filter((f) => f.id !== currentFolder.value?.id)
     .map((f) => ({ value: String(f.id), label: f.name }));
   if (currentFolder.value) {
-    targets.push({ value: '', label: 'No folder' });
+    targets.push({ value: '', label: '无文件夹' });
   }
   return targets;
 });
@@ -484,15 +484,15 @@ async function handleDelayConfirm(value: string) {
 const confirmModalConfig = computed(() => {
   switch (confirmAction.value) {
     case 'stop':
-      return { title: 'Stop Container', message: `Stop "${props.container.name}"?`, label: 'Stop', variant: 'danger' as const };
+      return { title: '停止容器', message: `停止 "${props.container.name}"？`, label: '停止', variant: 'danger' as const };
     case 'restart':
-      return { title: 'Restart Container', message: `Restart "${props.container.name}"?`, label: 'Restart', variant: 'default' as const };
+      return { title: '重启容器', message: `重启 "${props.container.name}"？`, label: '重启', variant: 'default' as const };
     case 'remove':
-      return { title: 'Remove Container', message: `Remove "${props.container.name}"? This cannot be undone.`, label: 'Remove', variant: 'danger' as const };
+      return { title: '移除容器', message: `移除 "${props.container.name}"？此操作无法撤销。`, label: '移除', variant: 'danger' as const };
     case 'force-update':
-      return { title: 'Force Update', message: `Pull "${props.container.image}" and recreate "${props.container.name}" even if no update is available?`, label: 'Force Update', variant: 'default' as const };
+      return { title: '强制更新', message: `拉取 "${props.container.image}" 并重建 "${props.container.name}"，即使没有可用更新？`, label: '强制更新', variant: 'default' as const };
     case 'recreate':
-      return { title: 'Apply Update', message: `Recreate "${props.container.name}" so it runs the pulled "${props.container.image}" image? A restart keeps the old image.`, label: 'Recreate', variant: 'default' as const };
+      return { title: '应用更新', message: `重建 "${props.container.name}" 以运行已拉取的 "${props.container.image}" 镜像？重启会保留旧镜像。`, label: '重建', variant: 'default' as const };
     default:
       return { title: '', message: '', label: '', variant: 'default' as const };
   }
@@ -579,8 +579,8 @@ const hasPortConflict = computed(() => !!portConflict.value);
 const portConflictTitle = computed(() =>
   portConflict.value
     ? portConflict.value.conflicts
-        .map((d) => `Port ${d.hostPort}/${d.type} is in use by ${d.heldBy.join(', ')}`)
-        .join('; ')
+        .map((d) => `端口 ${d.hostPort}/${d.type} 已被 ${d.heldBy.join('、')} 占用`)
+        .join('；')
     : ''
 );
 
@@ -597,7 +597,7 @@ const securityTitle = computed(() =>
 );
 const securityAriaLabel = computed(() => {
   const n = securityFindings.value.length;
-  return `${n} security finding${n === 1 ? '' : 's'} on ${props.container.name}`;
+  return `${n} 项安全发现，位于 ${props.container.name}`;
 });
 
 const hasUpdate = computed(() => settingsStore.enableUpdateChecks && updatesStore.hasUpdate(props.container.image));
@@ -849,8 +849,8 @@ const composeProject = computed(() => composeProjectOf(props.container) ?? '');
 const isCompose = computed(() => !!composeProject.value);
 
 const needsRecreateTitle = computed(() => isCompose.value
-  ? 'A newer image is pulled but not running. Run Stack Up or Recompose from the stack folder menu to apply it.'
-  : 'A newer image is pulled but not running. Recreate the container to apply it.');
+  ? '已拉取较新镜像但未运行。请在堆栈文件夹菜单中执行“启动堆栈”或“重建”以应用。'
+  : '已拉取较新镜像但未运行。重建容器以应用。');
 
 const isManaged = computed(() => props.container.managed === 'dockerman');
 
@@ -869,12 +869,12 @@ const canAdopt = computed(
 const manageHint = computed(() => {
   if (isManaged.value) return undefined;
   if (isCompose.value) {
-    return 'Unraid does not manage Compose containers. Edit the stack instead.';
+    return 'Unraid 不管理 Compose 容器，请改为编辑堆栈。';
   }
   if (!canAdopt.value) {
-    return 'Only available for containers that Unraid manages. Turn on adoption in Settings > Docker Folders.';
+    return '仅适用于 Unraid 管理的容器。请在“设置 › Docker Folders”中开启接管。';
   }
-  return 'Only available for containers that Unraid manages. Use Adopt into Unraid first.';
+  return '仅适用于 Unraid 管理的容器。请先“纳入 Unraid 管理”。';
 });
 
 /**
@@ -926,13 +926,13 @@ const onMobileList = computed(() => props.view === 'list' && isMobile.value);
  * itself (KebabMenu).
  */
 const menuItems = computed<KebabMenuItem[]>(() => [
-  { label: 'Apply Update', icon: DOWNLOAD_ICON, action: 'update', class: 'text-warning', show: hasUpdate.value },
-  { label: 'Apply Update', icon: DOWNLOAD_ICON, action: 'recreate', class: 'text-warning', show: needsRecreate.value && !isCompose.value },
+  { label: '应用更新', icon: DOWNLOAD_ICON, action: 'update', class: 'text-warning', show: hasUpdate.value },
+  { label: '应用更新', icon: DOWNLOAD_ICON, action: 'recreate', class: 'text-warning', show: needsRecreate.value && !isCompose.value },
   { divider: true },
-  { label: 'Actions', icon: PLAY_ICON, children: actionMenuItems.value },
-  { label: 'Autostart', icon: AUTOSTART_ICON, children: autostartMenuItems.value },
-  { label: 'Links', icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71|M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', children: linkMenuItems.value },
-  { label: 'Options', icon: GEAR_ICON, children: optionMenuItems.value },
+  { label: '操作', icon: PLAY_ICON, children: actionMenuItems.value },
+  { label: '自动启动', icon: AUTOSTART_ICON, children: autostartMenuItems.value },
+  { label: '链接', icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71|M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', children: linkMenuItems.value },
+  { label: '选项', icon: GEAR_ICON, children: optionMenuItems.value },
 ]);
 
 /**
@@ -943,46 +943,46 @@ const menuItems = computed<KebabMenuItem[]>(() => [
  */
 const actionMenuItems = computed<KebabMenuItem[]>(() => [
   ...byLabel([
-    { label: 'Start', icon: 'M6 4l14 8-14 8z', action: 'start', class: 'text-success', show: onMobileList.value && isStopped.value },
-    { label: 'Resume', icon: 'M6 4l14 8-14 8z', action: 'resume', class: 'text-success', show: onMobileList.value && isPaused.value },
-    { label: 'Restart', icon: 'M1 4v6h6|M3.51 15a9 9 0 1 0 2.13-9.36L1 10', action: 'restart', class: 'text-primary', show: onMobileList.value && isRunning.value },
-    { label: 'Stop', icon: 'M6 6h12v12H6z', action: 'stop', class: 'text-error', show: onMobileList.value && isRunning.value },
-    { label: 'Force Update', icon: DOWNLOAD_ICON, action: 'force-update', class: 'text-warning', show: !hasUpdate.value && !isCompose.value },
+    { label: '启动', icon: 'M6 4l14 8-14 8z', action: 'start', class: 'text-success', show: onMobileList.value && isStopped.value },
+    { label: '恢复', icon: 'M6 4l14 8-14 8z', action: 'resume', class: 'text-success', show: onMobileList.value && isPaused.value },
+    { label: '重启', icon: 'M1 4v6h6|M3.51 15a9 9 0 1 0 2.13-9.36L1 10', action: 'restart', class: 'text-primary', show: onMobileList.value && isRunning.value },
+    { label: '停止', icon: 'M6 6h12v12H6z', action: 'stop', class: 'text-error', show: onMobileList.value && isRunning.value },
+    { label: '强制更新', icon: DOWNLOAD_ICON, action: 'force-update', class: 'text-warning', show: !hasUpdate.value && !isCompose.value },
     // Shown before settings land so the menu doesn't grow an entry a moment
     // after it opens; disabled until we know update checks are actually on.
-    { label: updatesStore.isCheckingImage(props.container.image) ? 'Checking for Updates…' : 'Check for Updates', icon: REFRESH_ICON, action: 'check-updates', show: !settingsStore.loaded || settingsStore.enableUpdateChecks, disabled: !settingsStore.loaded, title: settingsStore.loaded ? undefined : 'Loading settings…' },
-    { label: 'Console', icon: 'M4 17l6-5-6-5|M12 19h8', action: 'console', show: isRunning.value && !isCompose.value },
-    { label: 'Logs', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z|M14 2v6h6|M16 13H8|M16 17H8|M10 9H8', action: 'logs', show: !isCompose.value },
+    { label: updatesStore.isCheckingImage(props.container.image) ? '正在检查更新…' : '检查更新', icon: REFRESH_ICON, action: 'check-updates', show: !settingsStore.loaded || settingsStore.enableUpdateChecks, disabled: !settingsStore.loaded, title: settingsStore.loaded ? undefined : '正在加载设置…' },
+    { label: '控制台', icon: 'M4 17l6-5-6-5|M12 19h8', action: 'console', show: isRunning.value && !isCompose.value },
+    { label: '日志', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z|M14 2v6h6|M16 13H8|M16 17H8|M10 9H8', action: 'logs', show: !isCompose.value },
     // `href` is empty for an unmanaged container, so KebabMenu falls through to
     // its button branch, which is the only one that honours disabled/title.
     // A compose container takes that branch on purpose: Unraid has no template
     // to open for it, and the file that actually defines it is the stack's.
     // Same label either way, so the entry keeps its place in the sorted list.
-    { label: 'Edit', icon: EDIT_ICON, ...editEntry.value },
+    { label: '编辑', icon: EDIT_ICON, ...editEntry.value },
   ]),
   { divider: true },
-  { label: 'Remove', icon: TRASH_ICON, action: 'remove', class: 'text-error', show: onMobileList.value && isStopped.value },
+  { label: '移除', icon: TRASH_ICON, action: 'remove', class: 'text-error', show: onMobileList.value && isStopped.value },
 ]);
 
 /** Whether the container starts with the array, and how long it waits. */
 const autostartMenuItems = computed<KebabMenuItem[]>(() => [
-  { label: props.container.autostart ? 'Disable Autostart' : 'Enable Autostart', icon: AUTOSTART_ICON, action: 'toggle-autostart', class: props.container.autostart ? 'text-success' : '', disabled: !isManaged.value, title: manageHint.value },
-  { label: `Autostart Delay: ${props.container.autostartDelay ?? 0}s`, icon: STOPWATCH_ICON, action: 'set-autostart-delay', show: !isManaged.value || props.container.autostart, disabled: !isManaged.value, title: manageHint.value },
+  { label: props.container.autostart ? '禁用自动启动' : '启用自动启动', icon: AUTOSTART_ICON, action: 'toggle-autostart', class: props.container.autostart ? 'text-success' : '', disabled: !isManaged.value, title: manageHint.value },
+  { label: `自动启动延迟：${props.container.autostartDelay ?? 0} 秒`, icon: STOPWATCH_ICON, action: 'set-autostart-delay', show: !isManaged.value || props.container.autostart, disabled: !isManaged.value, title: manageHint.value },
 ]);
 
 /** Where the container lives and runs from: adoption, schedules, folder. */
 const optionMenuItems = computed<KebabMenuItem[]>(() => byLabel([
-  { label: 'Adopt into Unraid', icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4|M17 8l-5-5-5 5|M12 3v12', action: 'adopt', show: canAdopt.value },
-  { label: 'Schedules', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z|M12 6v6l4 2', action: 'schedules' },
-  { label: `Security Findings (${securityFindings.value.length})`, icon: SHIELD_ICON, action: 'security', show: securityFindings.value.length > 0 },
-  { label: `${folderVerb.value} to Folder…`, icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z|M12 11v6|M9 14h6', action: 'pick-folder', show: folderTargets.value.length > 0 },
+  { label: '纳入 Unraid 管理', icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4|M17 8l-5-5-5 5|M12 3v12', action: 'adopt', show: canAdopt.value },
+  { label: '计划任务', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z|M12 6v6l4 2', action: 'schedules' },
+  { label: `安全发现 (${securityFindings.value.length})`, icon: SHIELD_ICON, action: 'security', show: securityFindings.value.length > 0 },
+  { label: `${folderVerb.value} 到文件夹…`, icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z|M12 11v6|M9 14h6', action: 'pick-folder', show: folderTargets.value.length > 0 },
 ]));
 
 /** Pages outside this plugin. */
 const linkMenuItems = computed<KebabMenuItem[]>(() => byLabel([
-  { label: 'WebUI', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z|M2 12h20|M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z', href: resolvedWebui.value || '', target: '_blank', show: !!resolvedWebui.value && isRunning.value },
-  { label: 'Project', icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71|M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', href: projectUrl.value || imageLink.value || '', target: '_blank', show: !!(projectUrl.value || imageLink.value) },
-  { label: 'Support', icon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', href: supportUrl.value || '', target: '_blank', show: !!supportUrl.value },
+  { label: 'Web 界面', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z|M2 12h20|M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z', href: resolvedWebui.value || '', target: '_blank', show: !!resolvedWebui.value && isRunning.value },
+  { label: '项目', icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71|M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', href: projectUrl.value || imageLink.value || '', target: '_blank', show: !!(projectUrl.value || imageLink.value) },
+  { label: '支持', icon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', href: supportUrl.value || '', target: '_blank', show: !!supportUrl.value },
 ]));
 
 async function handleMenuAction(action: string) {

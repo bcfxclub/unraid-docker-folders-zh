@@ -166,9 +166,9 @@ export interface BackupEntry {
 export type CronPreset = 'every_hour' | 'daily_3am' | 'daily_custom' | 'weekly_custom' | 'custom';
 
 export const CRON_PRESETS: Record<CronPreset, { label: string; expression: string | null }> = {
-  every_hour: { label: 'Every hour', expression: '0 * * * *' },
-  daily_3am: { label: 'Daily at 3:00 AM', expression: '0 3 * * *' },
-  daily_custom: { label: 'Daily at...', expression: null },
-  weekly_custom: { label: 'Weekly on...', expression: null },
-  custom: { label: 'Custom cron', expression: null },
+  every_hour: { label: '每小时', expression: '0 * * * *' },
+  daily_3am: { label: '每天 3:00', expression: '0 3 * * *' },
+  daily_custom: { label: '每天…', expression: null },
+  weekly_custom: { label: '每周…', expression: null },
+  custom: { label: '自定义 cron', expression: null },
 };
