@@ -502,17 +502,17 @@ const displayMounts = computed(() => {
 
 const healthStatus = computed(() => {
   const status = props.container.status?.toLowerCase() || '';
-  if (status.includes('(healthy)')) return 'healthy';
-  if (status.includes('(unhealthy)')) return 'unhealthy';
-  if (status.includes('(health: starting)')) return 'starting';
+  if (status.includes('(healthy)')) return '健康';
+  if (status.includes('(unhealthy)')) return '不健康';
+  if (status.includes('(health: starting)')) return '健康检测中';
   return null;
 });
 
 const healthClass = computed(() => {
   switch (healthStatus.value) {
-    case 'healthy': return 'text-success';
-    case 'unhealthy': return 'text-error';
-    case 'starting': return 'text-warning';
+    case '健康': return 'text-success';
+    case '不健康': return 'text-error';
+    case '健康检测中': return 'text-warning';
     default: return 'text-text-secondary';
   }
 });

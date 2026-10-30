@@ -183,3 +183,58 @@ export function openContainerTerminal(name: string, mode: 'console' | 'logs'): v
     window.open(`/logterminal/${suffix}/`, '_blank');
   }
 }
+
+/**
+ * Docker reports a container's state as a free-form English string
+ * ("Up About an hour (healthy)", "Up 2 days", "Exited (137) 3 days ago",
+ * "Restarting (1) 5 seconds ago", "Paused", "Created"…). The format varies
+ * widely, so we translate it piece by piece rather than matching the whole
+ * string: health suffixes, the "Up <duration>" running phrase, the "<n> <unit>
+ * ago" tail on exited/restarting states, and the bare state words. Anything we
+ * don't recognise is returned unchanged, so a future Docker wording can't end
+ * up half-translated.
+ */
+export function translateDockerStatus(raw: string | undefined | null): string {
+  if (!raw) return raw ?? '';
+  let s = raw;
+
+  // Health suffixes
+  s = s
+    .replace(/\(health: starting\)/gi, '（健康检测中）')
+    .replace(/\(healthy\)/gi, '（健康）')
+    .replace(/\(unhealthy\)/gi, '（不健康）');
+
+  // "Up <duration>" running phrase (covers "About an hour/minute" too)
+  s = s
+    .replace(/^Up About an hour$/i, '已运行 约 1 小时')
+    .replace(/^Up About a minute$/i, '已运行 约 1 分钟')
+    .replace(/^Up (\d+)\s+second(?:s)?$/i, '已运行 $1 秒')
+    .replace(/^Up (\d+)\s+minute(?:s)?$/i, '已运行 $1 分钟')
+    .replace(/^Up (\d+)\s+hour(?:s)?$/i, '已运行 $1 小时')
+    .replace(/^Up (\d+)\s+day(?:s)?$/i, '已运行 $1 天')
+    .replace(/^Up (\d+)\s+week(?:s)?$/i, '已运行 $1 周')
+    .replace(/^Up (\d+)\s+month(?:s)?$/i, '已运行 $1 个月')
+    .replace(/^Up (\d+)\s+year(?:s)?$/i, '已运行 $1 年');
+
+  // "<n> <unit> ago" tail on exited/restarting states
+  s = s
+    .replace(/(\d+)\s+second(?:s)? ago/gi, '$1 秒前')
+    .replace(/(\d+)\s+minute(?:s)? ago/gi, '$1 分钟前')
+    .replace(/(\d+)\s+hour(?:s)? ago/gi, '$1 小时前')
+    .replace(/(\d+)\s+day(?:s)? ago/gi, '$1 天前')
+    .replace(/(\d+)\s+week(?:s)? ago/gi, '$1 周前')
+    .replace(/(\d+)\s+month(?:s)? ago/gi, '$1 个月前')
+    .replace(/(\d+)\s+year(?:s)? ago/gi, '$1 年前');
+
+  // Bare state words
+  s = s
+    .replace(/^Exited/g, '已退出')
+    .replace(/^Restarting/g, '重启中')
+    .replace(/^Paused/g, '已暂停')
+    .replace(/^Created/g, '已创建')
+    .replace(/^Dead/g, '已失效')
+    .replace(/^Removing/g, '移除中');
+
+  return s;
+}
+

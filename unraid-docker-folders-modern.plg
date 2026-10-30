@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name "unraid-docker-folders-modern">
 <!ENTITY author "rizowski">
-<!ENTITY version "2026.10.30.3">
-<!ENTITY md5 "bc2120ad65ebd7d9c1026df54d93b288">
+<!ENTITY version "2026.10.30.4">
+<!ENTITY md5 "b36bbc91b817979008e3da1538c7cfe2">
 <!ENTITY launch "Docker">
 <!ENTITY plugdir "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github "bcfxclub/unraid-docker-folders-zh">
@@ -19,6 +19,9 @@
 
 <CHANGES>
 **Docker 文件夹（简体中文版）** — 使用现代化的 Vue 3 界面、实时资源统计与实时更新，通过拖拽将 Docker 容器整理到文件夹中进行管理。本版本已对插件界面（前端与设置页）进行简体中文汉化。
+
+###2026.10.30.4
+- **汉化补全：Docker 容器状态文本**。容器卡片上 Docker 返回的运行状态（如 `Up About an hour (healthy)`、`Exited (137) 3 days ago`、`Paused`、`Created` 等）此前直接透传英文原文，未做汉化。现已新增 `translateDockerStatus` 翻译函数，覆盖"已运行 X 小时/天/周/个月/年"、"约 1 小时/分钟"、"已退出/重启中/已暂停/已创建/已失效"、"X 秒前/分钟前/小时前/天前/周前/年前"以及"（健康）/（不健康）/（健康检测中）"等全部常见格式；同时容器详情里的 `healthy/unhealthy/starting` 也改为"健康/不健康/健康检测中"。无法识别的写法会原样保留，不会半翻译。
 
 ###2026.10.30.3
 - **汉化补全**：翻译了此前遗漏的英文界面文本——容器卡片「⋯」菜单（操作/自动启动/链接/选项，以及启动、停止、重启、恢复、控制台、日志、编辑、移除、检查更新、强制更新、纳入 Unraid 管理等）、操作确认弹窗、排序下拉（手动/名称/状态/最新优先/最旧优先）、统计条「内存」标签、定时任务预设（每小时/每天/每周/自定义）等，现已全面简体中文。
