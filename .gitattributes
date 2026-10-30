@@ -1,0 +1,23 @@
+# Force LF line endings on checkout for all text files.
+# Unraid is Linux-based and parses .page file headers (Menu=/Title=) with
+# strict line handling; CRLF breaks menu registration. Keeping the working
+# tree in LF prevents build.sh from packaging CRLF files.
+* text=auto eol=lf
+
+# Binary assets must never be touched.
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.webp binary
+*.tgz binary
+*.txz binary
+*.gz binary
+*.zip binary
+*.pdf binary
+*.db binary
+*.sqlite binary
