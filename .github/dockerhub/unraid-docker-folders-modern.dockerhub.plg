@@ -790,7 +790,7 @@ if [ -f "$PKG" ] && [ "$(md5sum "$PKG" | cut -d' ' -f1)" = "$EXPECT" ]; then
   echo "本地缓存命中, 跳过 Docker Hub 下载: $PKG"
 else
   echo "从 Docker Hub 拉取插件包 (docker.io/bcfx/unraid-docker-folders-modern:]]>&version;<![CDATA[) ..."
-  TOKEN=$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:bcfx/unraid-docker-folders-modern:pull" | sed -n 's/.*"token" *: *"\([^"]*\)".*//p')
+  TOKEN=$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:bcfx/unraid-docker-folders-modern:pull" | sed -n 's/.*"token" *: *"\([^"]*\)".*/\1/p')
   [ -n "$TOKEN" ] || { echo "ERROR: Docker Hub token 获取失败 (仓库未公开或触发限流?)"; exit 1; }
   MANIFEST=$(curl -fsSL -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.oci.image.index.v1+json" "https://registry-1.docker.io/v2/bcfx/unraid-docker-folders-modern/manifests/]]>&version;<![CDATA[")
   if echo "$MANIFEST" | grep -q '"manifests"'; then
