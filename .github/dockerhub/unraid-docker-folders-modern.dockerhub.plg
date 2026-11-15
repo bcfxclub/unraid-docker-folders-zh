@@ -1,0 +1,1176 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name "unraid-docker-folders-modern">
+<!ENTITY author "rizowski">
+<!ENTITY version "2026.10.30.4">
+<!ENTITY md5 "b36bbc91b817979008e3da1538c7cfe2">
+<!ENTITY launch "Docker">
+<!ENTITY plugdir "/usr/local/emhttp/plugins/&name;">
+<!ENTITY github "bcfxclub/unraid-docker-folders-zh">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/&name;.plg">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;"
+        launch="&launch;" pluginURL="&pluginURL;"
+        support="https://github.com/&github;/issues"
+        project="https://github.com/&github;"
+        icon="icon.png"
+        min="7.0.0">
+
+<CHANGES>
+**Docker 文件夹（简体中文版）** — 使用现代化的 Vue 3 界面、实时资源统计与实时更新，通过拖拽将 Docker 容器整理到文件夹中进行管理。本版本已对插件界面（前端与设置页）进行简体中文汉化。
+
+###2026.10.30.4
+- **汉化补全：Docker 容器状态文本**。容器卡片上 Docker 返回的运行状态（如 `Up About an hour (healthy)`、`Exited (137) 3 days ago`、`Paused`、`Created` 等）此前直接透传英文原文，未做汉化。现已新增 `translateDockerStatus` 翻译函数，覆盖"已运行 X 小时/天/周/个月/年"、"约 1 小时/分钟"、"已退出/重启中/已暂停/已创建/已失效"、"X 秒前/分钟前/小时前/天前/周前/年前"以及"（健康）/（不健康）/（健康检测中）"等全部常见格式；同时容器详情里的 `healthy/unhealthy/starting` 也改为"健康/不健康/健康检测中"。无法识别的写法会原样保留，不会半翻译。
+
+###2026.10.30.3
+- **汉化补全**：翻译了此前遗漏的英文界面文本——容器卡片「⋯」菜单（操作/自动启动/链接/选项，以及启动、停止、重启、恢复、控制台、日志、编辑、移除、检查更新、强制更新、纳入 Unraid 管理等）、操作确认弹窗、排序下拉（手动/名称/状态/最新优先/最旧优先）、统计条「内存」标签、定时任务预设（每小时/每天/每周/自定义）等，现已全面简体中文。
+
+###2026.10.30.2
+- **修复：菜单不显示、功能无法使用**。上一版（2026.10.30.1）打包时所有文件使用了 Windows 的 CRLF 换行符，而 Unraid（Linux）解析 `.page` 头部 `Menu=`/`Title=` 指令时无法识别带 `\r` 的行，导致插件菜单（Docker › 文件夹、设置 › 工具 › Docker Folders）不注册，且无法进入页面。本版已将全部文件转为 LF 换行符，菜单与功能恢复正常。
+
+（以下为原版英文更新日志，保留供参考：）
+
+**Docker Folders** — Organize your Docker containers into drag-and-drop folders with a modern Vue 3 interface, live resource stats, and real-time updates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###2026.10.25-2
+- Fixed: A container dragged to another folder no longer shows in both folders until the page is reloaded.
+- Fixed: Reordering containers within a folder no longer makes the card snap back while the new order saves.
+###2026.10.25
+- New: A stacks button on the Folders page toolbar opens a pane of compose stacks; picking a stack shows only its folders and containers, and each row offers the stack's actions.
+- New: The compose stacks pane slides in and out, and the folders column slides with it.
+- New: Stack Down and Recompose now open a confirm dialog explaining what is kept and lost, with a "Don't ask again" box and a toggle for each under Settings &gt; Docker Folders &gt; Docker Compose.
+- New: Containers that crashed are marked "Crashed" on cards, list rows and the dashboard widget, folders show a crashed count, and "Hide stopped" keeps them in view.
+- New: Containers killed for running out of memory show as "Crashed (out of memory)".
+- New: Running containers are checked once a minute: a dead process shows as crashed, unreachable ports show a warning line, and an Unraid notification is sent when a container crashes or goes unreachable.
+- New: Expanding a stopped container shows its last 200 log lines so you can see why it stopped.
+- Improved: The folder header's Stack Down button is now labelled "Stack Down (delete containers)" with a trash icon.
+- Improved: The details panel hides Block I/O, Net I/O, PIDs and Uptime for a stopped container.
+- Improved: While a stack is stopping or going down, its other compose actions are disabled everywhere.
+- Fixed: A failed start, stop or remove now shows Docker's own reason on the card, list row and dashboard widget.
+- Fixed: A failed Stack Down or Stop All from a folder now shows its error instead of silently stopping the spinner.
+- Fixed: Folders can be collapsed again while a search filter is active.
+- Fixed: A container dragged into a folder now stays where it was dropped, and leaves its old stack's service preview.
+- Fixed: The "Also delete the image" box in the container Remove dialog now shows on Unraid.
+- Fixed: A failed folder assignment during compose sync no longer marks the container as assigned.
+- Internal fixes and performance improvements.
+###2026.10.25-dev1
+- Improved: The folders column now slides smoothly when the stacks pane opens or closes, unless reduced motion is turned on.
+- Fixed: A container dropped into a manually ordered folder now stays where it was dropped instead of jumping to the end.
+- Fixed: A stack folder's preview of stopped services no longer lists services whose container was moved to another folder.
+###2026.10.24-dev4
+- New: Expanding a stopped container now shows its last 200 log lines on the card, so you can see why it stopped.
+- Improved: The Compose stacks pane now slides in and out smoothly, with the animation turned off when reduced motion is preferred.
+- Improved: The container details panel hides Block I/O, Net I/O, PIDs and Uptime for a stopped container.
+###2026.10.24-dev3
+- New: Containers that crash on their own are now marked as crashed on the card and list row, with the exit code on hover, a crashed count on the folder header, and a Crashed tag and counts in the dashboard widget.
+- New: Containers killed for running out of memory show as "Crashed (out of memory)" and count as crashed.
+- New: A once-a-minute check catches containers Docker still lists as running after their process has exited, and warns on the card, list row and widget when a published port stops listening or a host port is not published.
+- New: An Unraid notification is sent when a container crashes, is killed for memory or becomes unreachable, without repeating for restart loops or flapping ports.
+- New: Stack Down and Recompose now open a confirm dialog explaining what is kept and what is lost, with a "Don't ask again" box and toggles for each under Settings &gt; Docker Folders &gt; Docker Compose.
+- Improved: "Hide stopped" keeps crashed containers visible on the Folders page and in the widget.
+- Improved: The folder header's Stack Down button now reads "Stack Down (delete containers)" with a trash icon.
+- Improved: While a stack stop or Stack Down runs, all other compose actions on that stack are disabled in the folder header, folder menu and stacks pane.
+- Fixed: A failed container start, stop or remove now shows Docker's own reason on the card, list row and dashboard widget instead of silently stopping the spinner.
+- Fixed: A failed Stack Down or Stop All from the folder header or menu now shows the error until dismissed.
+- Fixed: Folders can be collapsed again while a search or stack filter is active.
+- Fixed: The "Also delete the image" checkbox in the container Remove dialog now appears on Unraid.
+###2026.10.24-dev2
+- New: Filter the Folders page by compose stack
+- Fixed: Stop rewriting unchanged stack rows on every sync
+- Internal fixes and performance improvements.
+###2026.10.24
+- Fixed: Stop rewriting unchanged stack rows on every sync
+- Fixed: Stop recreating empty stack folders (#21)
+- Fixed: Apply a pulled update without pulling again (#20)
+- Fixed: Check moved-tag containers under their tag in GraphQL mode (#20)
+- Fixed: Recreate after a pull instead of offering a restart (#20)
+- Internal fixes and performance improvements.
+###2026.10.24-dev1
+- Fixed: Compose sync no longer recreates an empty stack folder after you move the stack's containers elsewhere or delete the folder. (#21)
+###2026.10.22-dev1
+- New: Container cards show Not Applied when a pulled image was never applied, and Apply Update in the card menu recreates the container on it. (#20)
+- Fixed: The "Pull + offer recreate" option (formerly "Pull + offer restart") now offers a Recreate button in the pull and batch pull windows once the pull finishes, instead of doing nothing on Unraid. (#20)
+- Fixed: Apply Update and Recreate use the image already pulled instead of pulling again, so locally built images can be applied and the build you chose is the one used. (#20)
+- Fixed: Containers created outside Unraid are updated, force-updated and checked for updates under their image tag after an earlier pull, instead of failing or never showing the next update. (#20)
+- Fixed: A container that a pull fails to recreate is reported as an error instead of showing Pull complete. (#20)
+###2026.10.19
+- New: A new memory calculation setting under Settings &gt; Docker Folders &gt; Display switches container memory usage between the Docker CLI method (the default) and the raw cgroup number. (#19)
+- Fixed: Container memory usage now matches `docker stats` instead of reading higher because page cache was counted. (#19)
+- Fixed: Unfoldered containers keep their place in the list when they start or stop instead of jumping around.
+- Fixed: Stats polling no longer reads the memory setting from the flash drive on every update. (#19)
+- Internal fixes and performance improvements.
+###2026.10.18-dev4
+- Fixed: Containers outside folders no longer reshuffle after loading, because every part of the plugin now sorts their names the same way.
+- Fixed: Loading the container list at the same time from several places no longer fails while the starting order for unfoldered containers is saved.
+###2026.10.18-dev3
+- Fixed: Containers outside any folder now keep their place in the list instead of jumping around when they start or stop.
+###2026.10.18-dev2
+- New: A new memory calculation setting under Settings &gt; Docker Folders &gt; Display lets you switch container memory usage back to the raw cgroup number. (#19)
+- Fixed: Container memory usage now matches what docker stats shows instead of reading higher because page cache was counted. (#19)
+- Internal fixes and performance improvements.
+###2026.10.11
+- New: A new GraphQL backend, marked unstable, can be chosen in the Backend section of the settings page as an alternative to PHP.
+- New: The GraphQL backend installs only when you choose it, shows a warning with manual restore steps you must copy first, and switches back to PHP on its own when it stops answering.
+- New: The GraphQL backend can only be installed on tested Unraid API versions, and the server returns to PHP mode when the API moves outside that range.
+- New: A new setting can reinstall Docker Compose after a reboot from a copy kept on the flash drive, so stack autostart keeps working. (#18)
+- New: Schedules have a new Update action that pulls a newer image for a container and recreates it.
+- New: Backup schedules have a Postgres backup mode that dumps the databases you pick to their own archive each, without stopping the container.
+- New: The backup form suggests folder paths as you type, can pause or stop the container during a backup, and keeps database sidecar files with the database.
+- New: The schedule list warns when the schedule runner stops, and the server repairs its cron entry on its own.
+- New: The folded Docker Folders dashboard tile shows the running count and CPU and RAM bars on one line.
+- New: The dashboard widget shows an All running total as CPU and memory arc gauges.
+- New: A new Stats refresh interval setting sets how often stats update in GraphQL mode.
+- Improved: The Folders page and dashboard widget show placeholder rows with a shimmer during the first load.
+- Improved: A collapsed folder's memory is now shown as the sum of its containers against host memory, instead of an average.
+- Improved: Plugin updates and boots no longer reinstall the GraphQL backend or restart the Unraid API when nothing changed.
+- Improved: Settings boxes no longer have a green accent bar.
+- Improved: Compose stack up, down, stop and pull now get up to 600 seconds before timing out.
+- Fixed: A collapsed folder's CPU is shown as the sum of its containers again, instead of a tiny share of the host.
+- Fixed: Live updates reach other tabs and the dashboard tile right away instead of after up to 30 seconds.
+- Fixed: Log lines show Docker's timestamps in the server's time zone, so they no longer look out of order.
+- Fixed: Volumes and ports in the container details keep the same order across refreshes.
+- Fixed: A failed image pull is reported as failed instead of marking the image up to date and recreating on the old image.
+- Fixed: Pulls work for images with a registry port or a digest, and containers without labels recreate after a pull.
+- Fixed: The update modal keeps its release-notes link after a pull, and links in release-note summaries no longer vanish.
+- Fixed: A manual update check no longer freezes the rest of the Unraid web interface.
+- Fixed: Backup retention no longer deletes another target's archives or good backups after a failed run, and backup lists show only the target's own archives.
+- Fixed: A stack backup that archived nothing, or a container that failed to restart after a backup, is now reported as a failure.
+- Fixed: Deleting a backup can only remove an archive the plugin wrote.
+- Fixed: A schedule no longer runs twice when Run now is clicked while it is already running.
+- Fixed: Scheduled runs that cannot start now send a failure notice instead of stopping silently.
+- Fixed: The container list shows Docker's error instead of an empty list when Docker fails.
+- Fixed: Port conflict detection now counts randomly assigned host ports.
+- Fixed: Adopting a container writes its image tag into the template instead of a digest.
+- Fixed: Stacks known only by their folder now list their services, and stacks with a dot in their name export again.
+- Fixed: Importing from compose.manager skips stacks the plugin cannot manage and no longer deletes files it did not create.
+- Fixed: Compose commands no longer hang without limit or spin at full CPU.
+- Fixed: Picking a folder in the path suggestions now lists that folder.
+- Internal fixes and performance improvements.
+###2026.10.11-dev4
+- Fixed: A collapsed folder now shows its CPU as the sum of its containers, so one container using a full core no longer shows as about 1% on large hosts.
+- Fixed: Copying the restore steps in the GraphQL warning dialog in Settings no longer closes the dialog, so the install button can be reached.
+###2026.10.11-dev3
+- Fixed: The option to reinstall Docker Compose after a reboot now works fully: the settings page shows the server's error when the copy to flash fails instead of always saying "Saved", and the flash copy is removed when the option is off or the plugin is uninstalled.
+- Internal fixes and performance improvements.
+###2026.10.11-dev2
+- New: A new setting can reinstall Docker Compose automatically after a reboot, keeping a verified copy on the flash drive so compose stacks can autostart again.
+###2026.10.11-dev1
+- Improved: The settings page no longer shows a green accent bar on each settings box.
+- Improved: The GraphQL backend only runs on tested Unraid API versions, and the settings page refuses to switch to it on an untested version.
+- Improved: A server using the GraphQL backend switches back to the PHP backend on its own when an Unraid API update moves it outside the tested versions.
+- Improved: Release notes in the changelog and on the settings page are now written for users and sorted into New, Improved and Fixed.
+- Fixed: The GraphQL backend now installs on Unraid 7.3.3 and 7.4.0-rc1, and a failed install is reported instead of passing silently.
+###2026.10.04-dev1
+- feat(settings): make users copy the restore steps before the GraphQL install
+###2026.09.29-dev1
+- feat(schedules): write one Postgres backup per database
+###2026.09.28-dev1
+- feat(schedules): add a Postgres backup mode for backup schedules
+- fix(schedules): run updates in the background, and other review fixes
+- feat(schedules): add an update action that pulls and recreates a container
+- feat(backend): skip the backend reinstall when its code did not change
+###2026.09.24-dev1
+- chore(backend): turn off npm's audit and funding notices for the backend install
+- fix(backend): restart the Unraid API once when the backend is removed
+- fix(backend): review fixes for the on-demand GraphQL backend
+- fix(backend): time out every API call, and expire a stuck install for the watchdog
+- feat(backend): install the GraphQL backend only on demand, and roll back when it breaks
+###2026.09.23-dev4
+- refactor(logs): one timestamp pass, and require the log time zone
+- fix(logs): show Docker's line stamps in the server's time zone
+###2026.09.23-dev3
+- feat(dashboard): put the folded tile's summary on one line
+- feat(dashboard): show running count, CPU and RAM on the folded tile
+- test(container-card): stop a stats fetch from replacing seeded stats
+- feat(widget): show the all-running total as two arc gauges
+- fix(containers): keep volumes and ports in one order across refreshes
+- feat(ui): show shimmer skeletons during the first load
+- refactor: clean up after review of the stats and database changes
+- perf(graphql): share one database handle, and speed up the page load
+- feat(stats): measure folder and total stats against the host
+- fix(plg): skip the Unraid API plugin install when it is current
+###2026.09.23-dev2
+- fix(build): lock @unraid/shared to the tarball CI downloads
+- feat(settings): mark the GraphQL backend as unstable
+- feat(graphql): add a GraphQL backend beside PHP, chosen by a setting
+###2026.09.23-dev1
+- fix(backups): check deleteBackup() containment with pathIsWithin() again
+- fix(schedules): report a lock file that cannot be opened as a failure
+- fix(compose): recheck every stack before an import rollback deletes files
+- fix(compose): do not roll back a file the import did not create
+- fix(compose): check project names with one shared rule
+- docs(docker): merge the two docblocks on request()
+- fix(backups): report the archive this stack backup actually wrote
+- fix(updates): decode whole lines of a pull stream and report every failure
+- fix(compose): apply the 128-character name limit in compose.php too
+- fix(compose): import only stacks the API can address, and keep a racing import's files
+- perf(compose): cache a missing docker compose too
+- fix(compose): stop execCommand spinning once its pipes close
+- fix(compose): give up, down, stop and pull 600 seconds
+- docs(docker): name the one path request() gets unencoded
+- fix(api): read "false" as false in request flags
+- refactor(updates): stop writing the unused release_notes.etag
+- fix(updates): keep autolink URLs in release-note summaries
+- refactor(compose): drop snapshotVersion's unused $sourcePath
+- fix(compose): copy imported files outside the database transaction
+- fix(compose): check the project name the same way in both endpoints
+- fix(compose): keep exporting stacks whose names contain a dot
+- fix(compose): refuse set_description while management is off
+- fix(compose): list services for a stack that has no compose_file set
+- perf(compose): check for docker compose once per request
+- fix(compose): enforce execCommand's timeout and read both pipes together
+- fix(ports): count random host ports in conflict detection
+- docs(claude): describe how PHP actually runs here
+- fix(updates): count each checked image once
+- fix(compose): update a stack row only when its paths change
+- fix(docker): stop inspecting a container whose image is gone
+- fix(websocket): return whether a publish succeeded
+- fix(websocket): send nothing while Unraid pauses publishing
+- fix(stats): accept only a full container id in getContainerLogSize
+- fix(docker): URL-encode every id in a Docker socket path
+- fix(schedules): run one schedule at most once at a time
+- fix(updates): release the session lock during a manual check
+- fix(containers): report a Docker failure instead of an empty list
+- fix(updates): split an image reference with a registry port or digest
+- fix(updates): keep the release-notes link after a pull
+- fix(adopt): write the image tag, not a digest, into the template
+- fix(websocket): publish folder refreshes as entity "folder"
+- fix(compose): refuse an unsafe project name in exportConfigs
+- fix(updates): fail a pull when Docker streams an error
+- test(backups): pin what deleteBackup may delete
+- fix(backups): list only the target's own archives
+- fix(backups): report the newest archive of a stack backup
+- fix(backups): fail a stack backup that archived nothing
+- fix(backups): report a failed restart when the archive also fails
+- fix(backups): remove the partial archive when tar fails
+- fix(backups): prune only the archives the target wrote
+- fix(backups): delete only an archive the plugin wrote
+- fix(schedules): claim each due slot, so two runners cannot both run it
+- fix(updates): recreate a container that has no labels
+- fix(websocket): publish to nchan over the Unix socket
+###2026.09.20-dev8
+- fix(schedules): read the right crontab spool and repair the runner itself
+###2026.09.20-dev7
+- feat(schedules): suggest backup paths, quiet the container, watch the runner
+###2026.09.20-dev6
+- test(settings): pin the security advisor default to on
+###2026.09.20-dev5
+- fix(install): use installpkg so a colliding package name cannot skip the install (#16)
+###2026.09.20-dev4
+- feat(docker): open the compose file from a container's Edit menu
+- fix(security): compare a container's user against the image's own USER
+###2026.09.20-dev3
+- feat(security): collapse the findings panel and name each note's cell
+###2026.09.20-dev2
+- feat(security): warn on shared folders and link the image page
+###2026.09.20-dev1
+- feat(security): flag risky container settings and advise on them
+###2026.09.19-dev2
+- fix(widget): span the folder color across the header row
+- fix(widget): keep the WebUI icon column on every row
+- fix(assets): stamp unhashed plugin assets with their mtime
+###2026.09.19-dev1
+- feat(widget): show CPU, memory, and status tags on the dashboard
+- feat(settings): replace the Docker Containers section by default
+- refactor(schedules): return the schedule details from executeSchedule
+- perf(menus): listen for scroll only while a submenu is open
+- refactor(folders): read the Compose action status in one place
+- refactor(menus): share kebab menu icon paths between containers and folders
+- feat(schedules): post an Unraid notification when an automatic run fails
+- fix(folders): keep an unticked container out of its folder
+- fix(folders): scroll the page while a container is dragged near its edge
+- fix(folders): keep a folder collapsed when a refetch lands before its save
+- fix(folders): remove a dragged container from its old folder at once
+- feat(menus): mark disabled menu items that explain why with an info icon
+- fix(containers): give autostart its own submenu
+- fix(menus): use a stopwatch icon for Autostart Delay
+- feat(containers): group the container menu into hover submenus
+- fix(folders): alphabetize the folder menu submenus
+- fix(folders): move Edit Stack into the Actions submenu
+- feat(folders): group the folder menu into hover submenus
+- fix(schedules): run "N/S" steps from N instead of at N only
+- fix(schedules): describe every field of a cron expression
+- fix(folders): stack collapsed folder CPU and MEM like a container row
+###2026.09.18-dev1
+- fix(schedules): allow Resume, keep the custom cron field, and stop clipping modals (#7)
+###2026.09.13-dev7
+- refactor(dashboard): simplify the widget settings code
+###2026.09.13-dev6
+- feat(dashboard): add a settings panel to the Docker Folders tile
+###2026.09.13-dev5
+- fix(dashboard): run the tile page as PHP instead of showing its source
+###2026.09.13-dev4
+- feat(dashboard): add a Docker Folders tile to the Unraid dashboard
+###2026.09.13-dev3
+- refactor(sort): share the folder sort decision and extract sort fields once
+- feat(header): show the container and folder counts inside the search field
+- feat(settings): group the settings page by what each setting affects
+- feat(sort): add a "Sort folders too" toggle to the sort menu
+- fix(folders): apply the toolbar sort to folder contents
+- build: use content-hashed asset filenames
+- fix(folders): do not count removed containers as hidden
+###2026.09.13-dev2
+- docs: add a contributing guide and require dev as the PR base
+- fix(folders): repair the #9 merge and add the sort menu
+- Add auto-sort options for folders and folder contents (#9)
+###2026.09.13-dev1
+- chore: update docs
+- refactor: share the paused-start rule and tidy the issue fixes
+- feat(updates): add Force Update to the container menu (#11)
+- feat(schedules): add a Resume action and let Start resume a paused container (#7)
+- fix(docker): resume a paused container from the card and the API (#7)
+- fix(schedules): evaluate and show schedule times in the server timezone (#7)
+- fix(folders): persist the manual order of unfoldered containers (#12)
+###2026.09.12-dev1
+- refactor: share the move-to-folder action and the select modal
+- feat(updates): name the containers in the update notification
+- feat(folders): add a folder picker to the container menu
+- fix(compose): rename the Stack Details menu item to Edit Stack
+- feat(docker): show the inline log panel in card view
+###2026.08.22-dev6
+- test(docker): pin the managed-with-autostart-off branch
+###2026.08.22-dev5
+- fix(docker): correct three faults the browser check found
+- feat(docker): put Adopt on the container, not only in the kebab menu
+###2026.08.22-dev4
+- fix(docker): escape adopted values before they reach Unraid's shell
+###2026.08.22-dev3
+- feat(docker): adopt CLI-created containers into Unraid's container manager
+###2026.08.22-dev2
+- fix(ui): keep an open kebab menu inside the frame instead of scrolling
+###2026.08.22-dev1
+- fix(ui): stop the unfoldered section clipping open kebab menus
+###2026.08.19-dev1
+- fix(folders): only add/remove containers that changed when saving a folder
+###2026.08.17-dev4
+- feat(settings): add a "Buy me a coffee" Ko-fi link
+###2026.08.17-dev3
+- feat(ui): collapse the create buttons into one menu, widen the search
+###2026.08.17-dev2
+- feat: rename to "Docker Folders" and shorten the page URLs
+###2026.08.17-dev1
+- feat(ui): one update button, and a re-check inside the confirm modal
+- feat(ui): collapse the three create buttons to "+" plus an icon
+###2026.08.16-dev2
+- fix(ui): render the update-check controls before settings land
+###2026.08.16-dev1
+- docs: summarize each release in CHANGELOG, stop regenerating it
+- chore: drop the beta label from Image Updates settings
+- fix(ui): stop compose buttons blinking in while availability is checked
+- test: fix session tests broken by PHPUnit output, silence constant warnings
+- fix(security): validate every user-influenced filesystem path
+- chore: prepare repo for Community Applications submission
+###2026.08.10-dev1
+- feat: show release notes in the update confirm modal
+###2026.07.26-dev5
+- feat: list containers before updating, and update several at once
+###2026.07.26-dev4
+- feat: show a container's schedules in its expanded card
+- fix: read logs from TTY containers, brighten secondary text, link container icons
+###2026.07.26-dev3
+- feat: replace container status dot/bar with a halo around the icon
+###2026.07.26-dev2
+- feat: restructure expanded container card and widen its click target
+###2026.07.26-dev1
+- fix: modals and add create container button
+###2026.07.25-dev2
+- fix: schedules modal
+###2026.07.18-dev8
+- Faint tint on collapsed folders; fix expand animation snapping open
+###2026.07.18-dev7
+- Replace folder left-border accent with expanded-state gradient tint
+###2026.07.18-dev6
+- Add design guardrails (DESIGN.md) and migrate off palette colors
+###2026.07.18-dev5
+- Remove live connection status indicator from main header
+###2026.07.18-dev4
+- Hide icon-only Docker Containers title bar variant
+###2026.07.18-dev3
+- Fix legacy button hiding on the native Docker page
+###2026.07.18-dev2
+- Add settings to hide legacy Docker containers and buttons
+###2026.07.18-dev1
+- Add targeted update checks for containers and compose stacks
+- Sync package-lock.json with package.json
+- Add GitHub Actions release workflows for main and dev
+###2026.06.06-dev1
+- Fix cron registration: write to plugin config dir, drop user field
+###2026.05.30-dev2
+- Pin yarn in .prototools to match packageManager
+- Show conflicting ports in expanded container details
+###2026.05.30-dev1
+- Add port conflict badge for stopped containers
+###2026.04.22-dev1
+- Fix update-check cron registration and link Update badge to release notes
+###2026.04.12-dev1
+- Add container/stack scheduling and backup system
+###2026.04.11-dev9
+- Add container expand/collapse animation and brighten info text
+- Optimize container stats with cgroup reads and slow-data caching
+###2026.04.11-dev8
+- Add compose file version history with rollback support
+###2026.04.11-dev7
+- Fix modal close button alignment, populate faded preview from compose file
+###2026.04.11-dev6
+- Consolidate modals, simplify compose folder UI, fix validation env
+###2026.04.11-dev5
+- Compose editor: logs tab, recompose flow, save lock, YAML highlighting
+###2026.04.11-dev4
+- Disable text wrapping in compose/env monospace textareas
+###2026.04.11-dev3
+- Add Logs tab to edit-stack modal with auto-refresh, fix modal layout bugs
+###2026.04.11-dev2
+- Force textarea resize/fill with !important to beat Unraid global CSS
+###2026.04.11-dev1
+- Stream compose stack start, fix create-stack textarea and banner flash
+###2026.04.07-dev2
+- Fix compose plugin import banner for users without compose.manager
+###2026.04.07-dev1
+- Render all modals in parent window to escape iframe clipping
+###2026.03.21-dev14
+- Fix folder counts, cleanup deleted containers, unify modals, delete image option
+###2026.03.21-dev13
+- Fix autostart: read/write Unraid's flat file, not just XML templates
+###2026.03.21-dev12
+- Fix: hide .title div before inject comment, not after
+###2026.03.21-dev11
+- Hide empty .title div generated by Unraid for inject page
+###2026.03.21-dev10
+- Fix autostart detection, add delay support, modal UIs, accordion width
+###2026.03.21-dev9
+- Extract icons into reusable components; uniform sizes; always-visible globe/autostart
+###2026.03.21-dev8
+- Add Create Stack button and container autostart toggle
+###2026.03.21-dev7
+- Fix compose UX: conditional play/stop, container sync, PortBindings
+###2026.03.21-dev6
+- add test files
+- Fix compose SHA256 hash, empty folder UX, and import banner persistence
+- Fix Docker Compose v2.32.4 SHA256 hash after upstream binary update
+###2026.03.21-dev5
+- Render compose modal in parent page DOM to avoid iframe clipping
+###2026.03.21-dev4
+- Lock parent scroll when modal open via wheel/touch/key event prevention
+###2026.03.21-dev3
+- Elevate iframe z-index when modal open; fix input/textarea styling
+###2026.03.21-dev2
+- Fix modal buttons and tabs overridden by Unraid button reset
+###2026.03.21-dev1
+- Fix modal overlay coverage, sizing, tab styling; add compose export feature
+###2026.03.15-dev7
+- Fix modal clipping: cap overlay to available iframe space instead of expanding iframe
+###2026.03.15-dev6
+- Fix scroll feedback loop: lock parent scroll while modal is open
+###2026.03.15-dev5
+- Fix modal clipping in iframe: direct height floor + correct max-height
+###2026.03.15-dev4
+- Fix compose modal visibility in iframe and title color
+###2026.03.15-dev3
+- Fix compose import file migration, modal z-index, and editor styling
+###2026.03.15-dev2
+- Fix compose UI: controls visibility, import banner, mock data alignment
+###2026.03.15-dev1
+- Add Docker Compose management feature
+###2026.03.06-2
+- Fix CHANGELOG.md entries for 2026.03.06 release
+- Fix SHA digest stored as container image, stop/restart timeouts, cron restore on boot, and modal viewport centering in iframe
+###2026.02.28-dev11
+- Show container actions in kebab menu only for mobile list view
+###2026.02.28-dev10
+- Mobile responsive overhaul, inline logs polish, and kebab menu improvements
+###2026.02.28-dev2
+- Add inline logs panel in list view expanded details
+###2026.02.28-dev1
+- Fix 502 error on container Console and Logs actions
+- Add "Clear" button to update check log viewer
+###2026.02.27-dev6
+- Fix stale update badges after checks find no updates
+###2026.02.27-dev5
+- Resolve SHA image refs to tags when recreating containers
+###2026.02.27-dev4
+- Fix false positive update detection after pulling images
+###2026.02.27-dev3
+- Fix ExposedPorts/Volumes empty object encoding in container recreate
+###2026.02.27-dev2
+- Surface Docker API errors in recreate flow, add plugin log entries
+###2026.02.27-dev1
+- Make post-pull operations resilient to prevent stream from dying
+###2026.02.25-dev10
+- Fix post-pull red X and add auto-recreate container support
+###2026.02.25-dev9
+- Fix Database::prepare() not existing, use query() instead
+###2026.02.25-dev8
+- Add PHP tests for checkAllImageUpdates update check logic
+- Fix iframe not shrinking on folder collapse, harden update loop
+###2026.02.25-dev7
+- Fix update check timeout and uneven card button sizing
+###2026.02.25-dev6
+- Fix update checks only completing for first container
+###2026.02.25-dev5
+- Fix build script bugs and improve robustness
+###2026.02.25-dev3
+- Fix folder stats bars, add StatsBar tests, update project docs
+- Extract reusable components, refactor backend config and stats
+- Fix concurrent container action loading states, add dev/stable release channels
+###2026.02.25-dev2
+- Extract reusable components, refactor backend config and stats
+- Fix concurrent container action loading states, add dev/stable release channels
+###2026.02.25
+- Add logging to manual update checks, gitignore phpunit cache
+- chore: update gitignore
+###2026.02.24-10
+- Add update check logging with viewer in settings
+###2026.02.24-9
+- Fix session check: csrf_token is runtime-only, not in session file
+###2026.02.24-8
+- Fix session validation for Unraid's custom session cookie
+###2026.02.24-7
+- Add Docker-based PHPUnit tests for auth layer
+- Fix PUT/DELETE CSRF validation and folder collapse persistence
+###2026.02.24-6
+- Fix form controls using nonexistent --input-background variable
+###2026.02.24-5
+- Fix dropdown text color on dark themes in settings page
+###2026.02.24-4
+- Revamp settings page: dark theme, grouped sections, container exclude modal
+###2026.02.24-3
+- Fix auth: read Unraid's Flask session cookie instead of PHP session
+###2026.02.24-2
+- Fix iframe auth: add credentials to all fetch calls, aggregate changelog by date
+- chore: update build script
+###2026.02.15
+**Added**
+- Mobile-responsive layout with sm breakpoints across all components
+- Collapsible "Unfoldered Containers" section (persisted to localStorage)
+- Auto-group Docker Compose stacks into folders
+- Replace Docker Containers section setting (fully takes over the Docker tab)
+- Styled confirmation modals for stop/restart/remove/delete-folder actions
+- Container edit, WebUI, Console, Logs, Project, Support in kebab menu
+- WebUI globe icon on card/row action bar
+- Average CPU/memory stats on collapsed folders with loading skeleton
+- Show ports on collapsed folders (configurable, default on)
+- Restart count badge on collapsed containers
+- Running/total count in folder badge
+- Settings button in nav bar
+- Volume paths link to Unraid file browser
+- Changelog displayed on settings page
+- Container details in expanded accordion: command, health status, and docker labels
+- Health/command/labels displayed side-by-side with I/O stats in two-column layout
+
+**Changed**
+- Grid minmax reduced from 350px to 280px for single-column on small screens
+- Reduced padding and gaps on mobile (cards, folders, modals, header)
+- List view expanded accordion uses single-column grid on mobile
+- Flat nav button style (removed gradients)
+- Smaller text sizes throughout
+- Stats bar track uses subtle color-mix for better dark theme contrast
+- Dark theme hover states use color-mix for better contrast
+- Settings button moved to far left of nav bar
+
+**Fixed**
+- List view expanded details used excessive left margin, now uses more available width
+- Header no longer breaks into column layout on desktop inside iframe
+- Console and Logs URLs corrected
+- Stats bars hidden in iframe due to responsive breakpoints
+- Stats load immediately on page load instead of waiting for poll interval
+- Stats persist through folder collapse/expand cycles (no skeleton flash)
+- Card view accordion text overflow with long volume paths
+- Confirm modal font size when rendered inside Unraid iframe
+- Accordion chevron direction (now points right when collapsed, down when expanded)
+
+###2026.02.14
+- Folder organization with drag-and-drop
+- Create, edit, and delete folders with custom icons and colors
+- Drag containers between folders and reorder within
+- Import/export folder configuration
+- Grid and list view modes with drag lock toggle
+- Health status distinction (green vs blue indicators)
+- Persistent folder state (collapsed/expanded)
+- Automatic database backups on uninstall
+
+###2026.02.13
+- Initial release
+- Docker container listing with start/stop/restart controls
+- SQLite database with automatic migrations
+- Modern responsive interface built with Vue 3 and Tailwind
+</CHANGES>
+
+<!--
+Pre-install cleanup script - Remove old versions
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+<![CDATA[
+#!/bin/bash
+
+PLUGIN_NAME="unraid-docker-folders-modern"
+CONFIG_DIR="/boot/config/plugins/${PLUGIN_NAME}"
+
+echo "Preparing to install ${PLUGIN_NAME}..."
+
+# Check for and remove any existing versions
+INSTALLED_PKGS=$(ls /var/log/packages/${PLUGIN_NAME}-* 2>/dev/null)
+
+if [ -n "$INSTALLED_PKGS" ]; then
+  echo "Found existing installation(s), removing..."
+  for pkg in $INSTALLED_PKGS; do
+    PKG_NAME=$(basename "$pkg")
+    echo "  Removing: $PKG_NAME"
+    removepkg "$PKG_NAME" 2>&1 | grep -v "Skipping" || true
+  done
+  echo "Old versions removed."
+fi
+
+# Clean up old downloaded packages
+if [ -d "$CONFIG_DIR" ]; then
+  echo "Cleaning up old package files..."
+  find "$CONFIG_DIR" -name "${PLUGIN_NAME}-*.txz" -mtime +7 -delete 2>/dev/null || true
+fi
+
+echo "Pre-install cleanup complete."
+]]>
+</INLINE>
+</FILE>
+
+<!--
+Download and install plugin package.
+
+installpkg, not upgradepkg: upgradepkg derives a package name by stripping the
+last three dash fields (Slackware's name-version-arch-build), and this package
+is named name-version.txz, so it derives to "unraid-docker". Any other installed
+package that derives to the same name (e.g. unraid-docker-template-fields-*)
+is then treated as the old version of this one, and the install is skipped
+with "newer version already installed". The pre-install script above already
+removes older versions of this plugin, so no upgrade matching is needed.
+-->
+<!--
+Docker Hub fetch - local cache first (offline reboot), OCI pull via curl if missing.
+Replaces the raw-GitHub download of the original FILE block; install still uses
+installpkg (not upgradepkg) for the reason documented above this block.
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+<![CDATA[
+#!/bin/bash
+PKG="/boot/config/plugins/unraid-docker-folders-modern/unraid-docker-folders-modern-]]>&version;<![CDATA[.txz"
+EXPECT="]]>&md5;<![CDATA["
+mkdir -p "/boot/config/plugins/unraid-docker-folders-modern"
+if [ -f "$PKG" ] && [ "$(md5sum "$PKG" | cut -d' ' -f1)" = "$EXPECT" ]; then
+  echo "本地缓存命中, 跳过 Docker Hub 下载: $PKG"
+else
+  echo "从 Docker Hub 拉取插件包 (docker.io/bcfx/unraid-docker-folders-modern:]]>&version;<![CDATA[) ..."
+  TOKEN=$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:bcfx/unraid-docker-folders-modern:pull" | sed -n 's/.*"token" *: *"\([^"]*\)".*//p')
+  [ -n "$TOKEN" ] || { echo "ERROR: Docker Hub token 获取失败 (仓库未公开或触发限流?)"; exit 1; }
+  MANIFEST=$(curl -fsSL -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.oci.image.index.v1+json" "https://registry-1.docker.io/v2/bcfx/unraid-docker-folders-modern/manifests/]]>&version;<![CDATA[")
+  if echo "$MANIFEST" | grep -q '"manifests"'; then
+    CHILD=$(echo "$MANIFEST" | grep -o '"digest" *: *"sha256:[a-f0-9]*"' | head -1 | grep -o 'sha256:[a-f0-9]*')
+    MANIFEST=$(curl -fsSL -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.oci.image.manifest.v1+json" "https://registry-1.docker.io/v2/bcfx/unraid-docker-folders-modern/manifests/$CHILD")
+  fi
+  DIGEST=$(echo "$MANIFEST" | tr -d '\n' | sed 's/.*"layers" *: *\[//' | grep -o 'sha256:[a-f0-9]*' | head -1)
+  [ -n "$DIGEST" ] || { echo "ERROR: manifest 里找不到 .txz 层"; exit 1; }
+  curl -fsSL -H "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/bcfx/unraid-docker-folders-modern/blobs/$DIGEST" -o "$PKG"
+  [ "$(md5sum "$PKG" | cut -d' ' -f1)" = "$EXPECT" ] || { echo "ERROR: MD5 校验失败"; rm -f "$PKG"; exit 1; }
+  echo "Docker Hub 拉取完成, MD5 校验通过"
+fi
+]]>
+</INLINE>
+</FILE>
+<FILE Run="/bin/bash">
+<INLINE>
+<![CDATA[
+installpkg "/boot/config/plugins/unraid-docker-folders-modern/unraid-docker-folders-modern-]]>&version;<![CDATA[.txz"
+]]>
+</INLINE>
+</FILE>
+
+<!--
+Post-install script
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+<![CDATA[
+#!/bin/bash
+
+PLUGIN_NAME="unraid-docker-folders-modern"
+PLUGIN_DIR="/usr/local/emhttp/plugins/${PLUGIN_NAME}"
+CONFIG_DIR="/boot/config/plugins/${PLUGIN_NAME}"
+VERSION="]]>&version;<![CDATA["
+LOG_FILE="${CONFIG_DIR}/install.log"
+
+echo "========================================="
+echo "Installing ${PLUGIN_NAME} v${VERSION}"
+echo "========================================="
+
+# Create log file
+mkdir -p "${CONFIG_DIR}"
+echo "Installation started at $(date)" > "${LOG_FILE}"
+
+# Verify plugin directory exists
+if [ ! -d "${PLUGIN_DIR}" ]; then
+  echo "ERROR: Plugin directory not found: ${PLUGIN_DIR}"
+  echo "ERROR: Plugin directory not found: ${PLUGIN_DIR}" >> "${LOG_FILE}"
+  echo "Installation may have failed. Check package integrity."
+  exit 1
+fi
+
+# Create necessary directories
+echo "Creating configuration directories..."
+mkdir -p "${CONFIG_DIR}/backups"
+mkdir -p "${CONFIG_DIR}/data"
+
+# Handle existing database
+DB_EXISTS=0
+if [ -f "${CONFIG_DIR}/data.db" ]; then
+  DB_EXISTS=1
+  echo "Existing database found."
+  echo "Existing database found at: ${CONFIG_DIR}/data.db" >> "${LOG_FILE}"
+
+  # Create backup of existing database before migration
+  BACKUP_FILE="${CONFIG_DIR}/backups/pre-upgrade-$(date +%Y%m%d-%H%M%S).db"
+  echo "Creating backup: ${BACKUP_FILE}"
+  # Through SQLite, not cp: the database is in use while this runs (the Unraid
+  # API plugin, PHP requests, the schedule runner), and a raw copy of a WAL
+  # database misses commits still in data.db-wal. See scripts/db-copy.php.
+  php "${PLUGIN_DIR}/scripts/db-copy.php" backup "${CONFIG_DIR}/data.db" "${BACKUP_FILE}" >> "${LOG_FILE}" 2>&1
+
+  if [ $? -eq 0 ]; then
+    echo "Backup created successfully." >> "${LOG_FILE}"
+  else
+    echo "WARNING: Failed to create backup. Continuing anyway..."
+    echo "WARNING: Failed to create backup" >> "${LOG_FILE}"
+  fi
+fi
+
+# Run database migrations (works for both new and existing databases)
+echo "Running database migrations..."
+echo "Running migrations..." >> "${LOG_FILE}"
+
+if [ ! -f "${PLUGIN_DIR}/scripts/migrate.php" ]; then
+  echo "ERROR: Migration script not found: ${PLUGIN_DIR}/scripts/migrate.php"
+  echo "ERROR: Migration script not found" >> "${LOG_FILE}"
+  exit 1
+fi
+
+# Run migration and capture output
+MIGRATION_OUTPUT=$(php "${PLUGIN_DIR}/scripts/migrate.php" 2>&1)
+MIGRATION_STATUS=$?
+
+echo "$MIGRATION_OUTPUT" >> "${LOG_FILE}"
+
+if [ $MIGRATION_STATUS -ne 0 ]; then
+  echo "ERROR: Database migration failed!"
+  echo "ERROR: Migration failed with status $MIGRATION_STATUS" >> "${LOG_FILE}"
+  echo ""
+  echo "Migration output:"
+  echo "$MIGRATION_OUTPUT"
+  echo ""
+
+  # Restore backup if this was an upgrade
+  # Each migration runs in its own transaction, so the failed one already
+  # rolled back. The restore also undoes any migration that succeeded earlier
+  # in this run. It writes through SQLite rather than cp: a file copied over
+  # the live database while connections have it open would meet the old WAL.
+  if [ $DB_EXISTS -eq 1 ] && [ -f "${BACKUP_FILE}" ]; then
+    echo "Restoring database from backup..."
+    if php "${PLUGIN_DIR}/scripts/db-copy.php" restore "${BACKUP_FILE}" "${CONFIG_DIR}/data.db" >> "${LOG_FILE}" 2>&1; then
+      echo "Database restored from backup." >> "${LOG_FILE}"
+    else
+      echo "WARNING: Restore failed. The database is as the failed migration left it, and the backup is at ${BACKUP_FILE}."
+      echo "WARNING: Restore from ${BACKUP_FILE} failed" >> "${LOG_FILE}"
+    fi
+  fi
+
+  echo "See log file for details: ${LOG_FILE}"
+  exit 1
+fi
+
+echo "Migration completed successfully."
+echo "Migration completed successfully" >> "${LOG_FILE}"
+
+# Set proper permissions
+echo "Setting permissions..."
+find "${PLUGIN_DIR}" -type d -exec chmod 755 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.page" -exec chmod 644 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.php" -exec chmod 644 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.sql" -exec chmod 644 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.sh" -exec chmod 755 {} \;
+
+# Make cron check script executable
+if [ -f "${PLUGIN_DIR}/scripts/check-updates.php" ]; then
+  chmod 755 "${PLUGIN_DIR}/scripts/check-updates.php"
+  echo "  check-updates.php made executable"
+fi
+
+# Clean up stale cron file from older versions that wrote to /etc/cron.d/
+# (update_cron never read it; the schedule now lives in CONFIG_DIR).
+if [ -f "/etc/cron.d/${PLUGIN_NAME}" ]; then
+  rm -f "/etc/cron.d/${PLUGIN_NAME}"
+  echo "  Removed stale /etc/cron.d/${PLUGIN_NAME}"
+fi
+
+# Make restore-cron script executable and run it to restore schedule from DB
+if [ -f "${PLUGIN_DIR}/scripts/restore-cron.php" ]; then
+  chmod 755 "${PLUGIN_DIR}/scripts/restore-cron.php"
+  CRON_OUTPUT=$(/usr/bin/php "${PLUGIN_DIR}/scripts/restore-cron.php" 2>&1)
+  if [ -n "$CRON_OUTPUT" ]; then
+    echo "  $CRON_OUTPUT"
+    echo "$CRON_OUTPUT" >> "${LOG_FILE}"
+  fi
+fi
+
+# Make compose scripts executable
+if [ -f "${PLUGIN_DIR}/scripts/compose-autostart.php" ]; then
+  chmod 755 "${PLUGIN_DIR}/scripts/compose-autostart.php"
+  echo "  compose-autostart.php made executable"
+fi
+if [ -f "${PLUGIN_DIR}/scripts/compose-shutdown.php" ]; then
+  chmod 755 "${PLUGIN_DIR}/scripts/compose-shutdown.php"
+  echo "  compose-shutdown.php made executable"
+fi
+
+# Make event hook scripts executable
+if [ -d "${PLUGIN_DIR}/event" ]; then
+  chmod 755 "${PLUGIN_DIR}/event/"*
+  echo "  Event hook scripts made executable"
+fi
+find "${PLUGIN_DIR}" -type f -name "*.html" -exec chmod 644 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.js" -exec chmod 644 {} \;
+find "${PLUGIN_DIR}" -type f -name "*.css" -exec chmod 644 {} \;
+
+if [ -f "${CONFIG_DIR}/data.db" ]; then
+  chmod 644 "${CONFIG_DIR}/data.db"
+  echo "Database permissions set." >> "${LOG_FILE}"
+fi
+
+# The GraphQL backend: the Unraid API plugin that serves GraphQL mode. It is
+# installed only while backend_mode is graphql, so a PHP-mode server never
+# carries code inside its Unraid API. scripts/api-plugin.sh does the work;
+# the settings page and the backend watchdog call the same script.
+#
+# This runs on every boot, not only on install. The API's node_modules live
+# in RAM, so a backend installed into them can be gone after a reboot, and
+# this puts it back. An unreadable mode touches nothing.
+API_PLUGIN_SCRIPT="${PLUGIN_DIR}/scripts/api-plugin.sh"
+chmod 755 "${API_PLUGIN_SCRIPT}" 2>/dev/null
+BACKEND_MODE=$(php -r 'require "/usr/local/emhttp/plugins/unraid-docker-folders-modern/include/config.php"; $m = dfmReadBackendMode(); echo $m === null ? "unknown" : $m;' 2>/dev/null)
+echo "Backend mode: ${BACKEND_MODE:-unknown}" >> "${LOG_FILE}"
+if [ "${BACKEND_MODE}" = "graphql" ]; then
+  /bin/bash "${API_PLUGIN_SCRIPT}" install
+elif [ "${BACKEND_MODE}" = "php" ] && [ -d "/usr/local/unraid-api/node_modules/unraid-api-plugin-docker-folders" ]; then
+  # Left by an older release, which installed it for every user.
+  /bin/bash "${API_PLUGIN_SCRIPT}" remove
+fi
+
+# Verify installation
+echo "Verifying installation..."
+VERIFY_FAIL=0
+
+if [ ! -f "${PLUGIN_DIR}/DockerFolders.page" ]; then
+  echo "  ✗ DockerFolders page not found."
+  echo "WARNING: DockerFolders page not found" >> "${LOG_FILE}"
+  VERIFY_FAIL=1
+else
+  echo "  ✓ DockerFolders page found"
+fi
+
+if [ ! -f "${PLUGIN_DIR}/Folders.page" ]; then
+  echo "  ✗ Folders page not found."
+  echo "WARNING: Folders page not found" >> "${LOG_FILE}"
+  VERIFY_FAIL=1
+else
+  echo "  ✓ Folders page found"
+fi
+
+if [ ! -f "${CONFIG_DIR}/data.db" ]; then
+  echo "  ✗ Database file not created."
+  echo "WARNING: Database file not created" >> "${LOG_FILE}"
+  VERIFY_FAIL=1
+else
+  echo "  ✓ Database file created"
+fi
+
+if [ ! -f "${PLUGIN_DIR}/assets/index.html" ]; then
+  echo "  ✗ Frontend assets not found."
+  echo "WARNING: Frontend assets not found" >> "${LOG_FILE}"
+  VERIFY_FAIL=1
+else
+  echo "  ✓ Frontend assets found"
+fi
+
+if [ ! -f "${PLUGIN_DIR}/api/folders.php" ]; then
+  echo "  ✗ API endpoints not found."
+  echo "WARNING: API endpoints not found" >> "${LOG_FILE}"
+  VERIFY_FAIL=1
+else
+  echo "  ✓ API endpoints found"
+fi
+
+# List installed files for debugging
+echo "" >> "${LOG_FILE}"
+echo "Installed files:" >> "${LOG_FILE}"
+ls -la "${PLUGIN_DIR}/" >> "${LOG_FILE}" 2>&1
+echo "" >> "${LOG_FILE}"
+echo "Page files:" >> "${LOG_FILE}"
+ls -la "${PLUGIN_DIR}"/*.page >> "${LOG_FILE}" 2>&1
+
+echo "Installation finished at $(date)" >> "${LOG_FILE}"
+
+if [ $VERIFY_FAIL -eq 0 ]; then
+  echo "========================================="
+  echo "${PLUGIN_NAME} v${VERSION} installed successfully!"
+  echo "========================================="
+  echo ""
+  echo "Access the plugin:"
+  echo "  • Docker > Folders"
+  echo "  • Settings > Utilities > Docker Folders"
+  echo ""
+  echo "Installation log: ${LOG_FILE}"
+else
+  echo "========================================="
+  echo "Installation completed with warnings!"
+  echo "========================================="
+  echo ""
+  echo "Some files may be missing. Check the log file:"
+  echo "${LOG_FILE}"
+  echo ""
+  echo "Try reinstalling the plugin or contact support."
+fi
+]]>
+</INLINE>
+</FILE>
+
+<!--
+Remove script
+-->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+<![CDATA[
+#!/bin/bash
+
+PLUGIN_NAME="unraid-docker-folders-modern"
+PLUGIN_DIR="/usr/local/emhttp/plugins/${PLUGIN_NAME}"
+CONFIG_DIR="/boot/config/plugins/${PLUGIN_NAME}"
+
+echo "========================================="
+echo "Removing ${PLUGIN_NAME}"
+echo "========================================="
+
+# Remove the cron file (current location + legacy /etc/cron.d/ from old versions),
+# then rebuild root's crontab without our entries.
+echo "Removing cron schedule..."
+rm -f "${CONFIG_DIR}/${PLUGIN_NAME}.cron" "/etc/cron.d/${PLUGIN_NAME}"
+if [ -x /usr/local/sbin/update_cron ]; then
+  /usr/local/sbin/update_cron >/dev/null 2>&1
+fi
+
+# Take the GraphQL backend out of the Unraid API. It lives in the API's own
+# dependency list, so leaving it would keep a plugin loaded whose PHP half,
+# settings page and database readers are gone.
+if [ -f "${PLUGIN_DIR}/scripts/api-plugin.sh" ]; then
+  /bin/bash "${PLUGIN_DIR}/scripts/api-plugin.sh" remove
+fi
+rm -rf "${CONFIG_DIR}/api-plugin"
+
+# Backup data before removal
+if [ -f "${CONFIG_DIR}/data.db" ]; then
+  echo "Backing up database..."
+  mkdir -p "${CONFIG_DIR}/backups"
+  BACKUP_FILE="${CONFIG_DIR}/backups/data-backup-$(date +%Y%m%d-%H%M%S).db"
+  # Through SQLite, so the backup includes commits still in data.db-wal.
+  # cp is the fallback if the script or php is already gone.
+  if ! php "${PLUGIN_DIR}/scripts/db-copy.php" backup "${CONFIG_DIR}/data.db" "${BACKUP_FILE}" >/dev/null 2>&1; then
+    cp "${CONFIG_DIR}/data.db" "${BACKUP_FILE}"
+  fi
+  echo "Database backed up to: ${BACKUP_FILE}"
+fi
+
+# Export configuration as JSON backup
+if [ -f "${CONFIG_DIR}/data.db" ] && [ -f "${PLUGIN_DIR}/api/folders.php" ]; then
+  echo "Exporting configuration..."
+  EXPORT_FILE="${CONFIG_DIR}/backups/export-$(date +%Y%m%d-%H%M%S).json"
+  curl -s "http://localhost/plugins/${PLUGIN_NAME}/api/folders.php?action=export" > "${EXPORT_FILE}" 2>/dev/null || true
+
+  if [ -s "${EXPORT_FILE}" ]; then
+    echo "Configuration exported to: ${EXPORT_FILE}"
+  else
+    rm -f "${EXPORT_FILE}" 2>/dev/null
+  fi
+fi
+
+# Find and remove all installed versions
+echo "Removing installed packages..."
+REMOVED=0
+for pkg in /var/log/packages/${PLUGIN_NAME}-*; do
+  if [ -f "$pkg" ]; then
+    PKG_NAME=$(basename "$pkg")
+    echo "  Removing: $PKG_NAME"
+    removepkg "$PKG_NAME" 2>&1 | grep -v "Skipping" || true
+    REMOVED=1
+  fi
+done
+
+if [ $REMOVED -eq 0 ]; then
+  echo "  No packages found to remove."
+fi
+
+# Clean up plugin directory if it still exists
+if [ -d "${PLUGIN_DIR}" ]; then
+  echo "Cleaning up plugin directory..."
+  rm -rf "${PLUGIN_DIR}"
+fi
+
+# Clean up downloaded packages (keep backups)
+if [ -d "${CONFIG_DIR}" ]; then
+  echo "Cleaning up old package files..."
+  rm -f ${CONFIG_DIR}/${PLUGIN_NAME}-*.txz 2>/dev/null || true
+  # The ~65 MB flash copy of Docker Compose ("Reinstall Docker Compose after
+  # a reboot"). It is a cache, not user data.
+  rm -f "${CONFIG_DIR}/docker-compose" "${CONFIG_DIR}/docker-compose.tmp"
+fi
+
+echo "========================================="
+echo "${PLUGIN_NAME} removed successfully."
+echo "========================================="
+echo ""
+echo "Your data has been preserved in: ${CONFIG_DIR}"
+echo "Database backups are in: ${CONFIG_DIR}/backups/"
+echo ""
+echo "To completely remove all plugin data, run:"
+echo "  rm -rf ${CONFIG_DIR}"
+echo ""
+]]>
+</INLINE>
+</FILE>
+
+</PLUGIN>
